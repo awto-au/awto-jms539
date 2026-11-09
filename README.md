@@ -118,6 +118,31 @@ option for requesting the design guide, SDK and programming documentation.
 ORICO should be asked separately for firmware and recovery instructions
 specific to 6648SUSJ3-BK.
 
+A November 2026 sweep used new terms, including Chinese and Russian ones,
+mass-production-tool names, Keil/C51 terms and GitHub code search. It still
+found no JMS539 SDK, firmware source, design guide or mass-production tool.
+Closest related material:
+
+- [xRetia/JMS56x](https://github.com/xRetia/JMS56x) has the vendor
+  `JMMassProd2` v1.16.14.1 tool for the JMS56x family and a community
+  disassembly with pseudocode of JMS565 firmware. It contains nothing for
+  JMS539.
+- [station-drivers](https://www.station-drivers.com/index.php/en/component/remository/Drivers/Jmicron/JMS539-Sata-USB-3.0-Controller/lang,en-gb/)
+  lists several JMS539 updater packages. The `255.31.3.41.22` package
+  (archive SHA-256
+  `e4dc340c0fd3f41064d1b8357529c756342f47bfc3445996e86932f16e4e28e7`)
+  contains `FwUpdateTool_v1_15_06_T2.exe` and
+  `JMS539_PM_255.31.3.41.22_20100805.BIN` (36,940 bytes, SHA-256
+  `68249795b8c532ccf6d6d344401a7832ee492fade4cc2dc172c5f83e37d047bb`).
+  Despite the higher-looking `41.22` number, the image uses a different, older
+  container. It begins with 4 KiB of `FF`, has `55 AA AA 55 35 35 31 31`
+  (`5511`) at `0x1000`, and has `STRBANK`/`ENDBANK0` markers. It has no
+  `5391` trailer at `0xBFF0`, which the `JMS539_B` images have. It is
+  therefore not a candidate for this dock. The other packages listed there
+  were not examined.
+- A gated CSDN listing claims to contain `JMS539FwUpdateTool_v07.exe`, an
+  updater rather than an SDK. It was not downloaded.
+
 ## Linux tooling
 
 [BertoldVdb/jms578flash](https://github.com/BertoldVdb/jms578flash) targets
