@@ -1,7 +1,10 @@
 # awto-jms539
 
-Research into a four-bay ORICO USB-SATA dock reporting JMicron USB ID
-`152d:0539`. The exact dock model and update compatibility are not confirmed.
+Research into an ORICO **6648SUSJ3-BK** four-bay USB-SATA dock, as identified
+by its owner, reporting JMicron USB ID `152d:0539`. A
+[2012 teardown](https://news.mydrivers.com/1/218/218034.htm) found JMS539 and
+JMB321 chips in one 6648SUSJ3 sample; it does not establish this dock's board
+revision or firmware compatibility.
 
 ## Status
 
@@ -18,9 +21,12 @@ Research into a four-bay ORICO USB-SATA dock reporting JMicron USB ID
   capacities; the 1 TB volume was automatically mounted. No further firmware
   commands were sent.
 - ORICO's JMS539B version 40.16 package lists 3549/3559 and 9548/9558 models;
-  it does not list 6648. The archive was downloaded over HTTP after HTTPS
-  certificate verification failed, and its authenticity has not been
-  independently verified. Do not assume it is suitable for this dock.
+  it does not list 6648SUSJ3-BK. Its image contains identifier `5391` at
+  offset `0xbff4`, while the dock's version response contains `5392`. The
+  significance of this difference is unknown. The archive was downloaded
+  over HTTP after HTTPS certificate verification failed, and its authenticity
+  has not been independently verified. Do not assume it is suitable for this
+  dock.
 - The attempted SPI probe returned `7f9d207f`. An earlier identification as
   `Pm25LD020` with 256 KiB capacity was a guess, not a finding; its proposed
   flash configuration has been disabled. The updater's table maps
@@ -51,12 +57,32 @@ Static analysis of this updater found:
   area near the end of the selected disk. This branch is reachable through the
   `JMS539 HDD FW` option or a detected flash-type condition; its exact use on
   this dock has not been established.
+- In the JMS539 image-check path, `FUN_00413ab0` checks only the first three
+  characters of the chip identifier. Passing that check would not establish
+  that a `5391` image is compatible with a dock reporting `5392`.
 - A previous Wine startup probe exposed host drives through automatic mappings.
   Do not assume that running the updater under Wine isolates other disks.
 
 These are static-analysis findings, not a tested update procedure. No update
 should be attempted until the image, target selection and write path are
 verified.
+
+## Design documentation and SDK
+
+The [two-page JMS539 datasheet](https://www.datasheethub.com/uploads/2023/07/jms539-datasheet.pdf)
+describes an 8051 core and lists a design kit containing a datasheet, design
+guide and evaluation board. It does not document the flash protocol or
+identify a firmware SDK or compiler. No verified public JMS539 SDK or design
+guide has been found; the datasheet does not establish whether an SDK exists
+or is currently available.
+
+A [third-party listing](https://www.usbdev.ru/files/jmicron/jms539datasheet/)
+advertises a separate v0.5.4 datasheet, but its download returned HTTP 500
+when checked, so its contents have not been verified. JMicron's
+[contact form](https://www.jmicron.com/contact) offers a technical-support
+option for requesting the design guide, SDK and programming documentation.
+ORICO should be asked separately for firmware and recovery instructions
+specific to 6648SUSJ3-BK.
 
 ## Linux tooling
 
