@@ -1,0 +1,11 @@
+DISABLED HISTORICAL NOTE - THIS IS NOT A PATCH
+
+An earlier experiment guessed that SPI response 7f9d207f represented a
+Pm25LD020 with a 256 KiB capacity and supplied guessed erase opcodes. Neither
+the chip identity, geometry nor erase commands were established. The patch was
+also malformed, and the attempted extraction did not complete.
+
+Upstream issue https://github.com/BertoldVdb/jms578flash/issues/12 reports the
+same response on a different dock whose flash is marked Pm25LQ512. That does
+not identify this dock's flash. Do not apply the old configuration or use it
+for writing; identify the physical chip and verify its datasheet first.

@@ -1,0 +1,16 @@
+# build artifacts
+*.o
+*.tmp
+tmp/
+
+# Local research material: vendor binaries, derived disassembly, and logs.
+/firmware/orico/
+/firmware/device/
+/analysis/initial/
+/analysis/wine-probe/
+/analysis/*.d52
+/analysis/*.log
+/analysis/updater-analysis.txt
+/ghidra/updater.gpr
+/ghidra/updater.rep/
+/references/jms578flash/
