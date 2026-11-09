@@ -125,10 +125,18 @@ class GhidraPipelineGuardTests(unittest.TestCase):
         )
         self.assertNotIn("-overwrite", command)
         self.assertIn(expected, command)
+        recovery = command.index("RecoverUndecodedJms5398051.java")
+        self.assertEqual(command[recovery + 1], "40.06")
+        self.assertEqual(command[recovery + 2], str(pipeline.input_paths("40.06")[1]))
         import_command = pipeline.build_import_command(
             "40.06", self.workspace, expected, "f" * 64, stage
         )
         self.assertNotIn("-overwrite", import_command)
+        seed = import_command.index("SeedJms5398051.java")
+        self.assertEqual(import_command[seed + 1], "40.06")
+        self.assertEqual(
+            import_command[seed + 2], str(pipeline.input_paths("40.06")[1])
+        )
 
     def test_incomplete_fresh_stage_does_not_replace_previous_exports(self):
         expected = "b" * 64

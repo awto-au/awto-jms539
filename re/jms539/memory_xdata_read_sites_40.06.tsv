@@ -1,6 +1,6 @@
 # JMS539 decoded memory-write inventory
 # firmware=40.06; image_sha256=2d502d65491415aa22e5debc6acbc722c9012b6a5ca5f7d15784ae2275080a2d
-# Decoded sites only; unknown targets and inferred addresses are not confirmed.
+# Ghidra-decoded sites, including D52-seeded blocks; unknown targets remain unconfirmed.
 pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	resolution
 0x4277	0x4249	MOVX	XDATA	0x0048		MOVX_DPTR	0x0048		local_straight_line
 0x4282	0x4249	MOVX	XDATA	0x004B		MOVX_DPTR	0x004B		local_straight_line
@@ -31,6 +31,7 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x4678	0x462B	MOVX	XDATA	0x7058		MOVX_DPTR	0x7058		ghidra_inferred
 0x470C	0x46FC	MOVX	XDATA	0x70B7		MOVX_DPTR	0x70B7		local_straight_line
 0x4728	0x4718	MOVX	XDATA	0x70B7		MOVX_DPTR	0x70B7		local_straight_line
+0x4737		MOVX	XDATA	0x705F		MOVX_DPTR	0x705F		local_straight_line
 0x4935	0x4B57	MOVX	XDATA	?		MOVX_DPTR			unresolved
 0x4983	0x4971	MOVX	XDATA	0x38FE		MOVX_DPTR	0x38FE		local_straight_line
 0x498C	0x4971	MOVX	XDATA	0x38FF		MOVX_DPTR	0x38FF		ghidra_inferred
@@ -163,9 +164,171 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x5800	0x57D6	MOVX	XDATA	0x3E3A		MOVX_DPTR	0x3E3A		local_straight_line
 0x5803	0x57D6	MOVX	XDATA	0x3E3B		MOVX_DPTR	0x3E3B		local_straight_line
 0x580C	0x57D6	MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x584D		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5858		MOVX	XDATA	0x7096		MOVX_DPTR	0x7096		local_straight_line
+0x585C		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5861		MOVX	XDATA	0x3E3C		MOVX_DPTR	0x3E3C		local_straight_line
+0x5864		MOVX	XDATA	0x3E3D		MOVX_DPTR	0x3E3D		local_straight_line
+0x5873		MOVX	XDATA	0x7097		MOVX_DPTR	0x7097		local_straight_line
+0x5886		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x588D		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5892		MOVX	XDATA	0x3E3C		MOVX_DPTR	0x3E3C		local_straight_line
+0x5895		MOVX	XDATA	0x3E3D		MOVX_DPTR	0x3E3D		local_straight_line
+0x58A6		MOVX	XDATA	0x3E3C		MOVX_DPTR	0x3E3C		local_straight_line
+0x58A9		MOVX	XDATA	0x3E3D		MOVX_DPTR	0x3E3D		local_straight_line
+0x58B2		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x58E1		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x58F3		MOVX	XDATA	0x7096		MOVX_DPTR	0x7096		local_straight_line
+0x5903		MOVX	XDATA	0x7097		MOVX_DPTR	0x7097		local_straight_line
+0x591A		MOVX	XDATA	0x632C		MOVX_DPTR	0x632C		local_straight_line
+0x5927		MOVX	XDATA	0x630C		MOVX_DPTR	0x630C		local_straight_line
+0x592B		MOVX	XDATA	0x630F		MOVX_DPTR	0x630F		local_straight_line
+0x593B		MOVX	XDATA	0x630D		MOVX_DPTR	0x630D		local_straight_line
+0x5951		MOVX	XDATA	0x6384		MOVX_DPTR	0x6384		local_straight_line
+0x5956		MOVX	XDATA	0x6387		MOVX_DPTR	0x6387		local_straight_line
+0x595E		MOVX	XDATA	0x8060		MOVX_DPTR	0x8060		local_straight_line
+0x5962		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5975		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x59A2		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x59B1		MOVX	XDATA	0x7096		MOVX_DPTR	0x7096		local_straight_line
+0x59C1		MOVX	XDATA	0x7097		MOVX_DPTR	0x7097		local_straight_line
+0x59DE		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x59FB		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
+0x5A0A		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5A12		MOVX	XDATA	0x6304		MOVX_DPTR	0x6304		local_straight_line
+0x5A1A		MOVX	XDATA	0x6305		MOVX_DPTR	0x6305		local_straight_line
+0x5A22		MOVX	XDATA	0x6306		MOVX_DPTR	0x6306		local_straight_line
+0x5A64		MOVX	XDATA	0x7079		MOVX_DPTR	0x7079		local_straight_line
+0x5A97		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5A9D		MOVX	XDATA	0x7086		MOVX_DPTR	0x7086		local_straight_line
+0x5AAC		MOVX	XDATA	0x3C57		MOVX_DPTR	0x3C57		local_straight_line
+0x5AAF		MOVX	XDATA	0x3C58		MOVX_DPTR	0x3C58		local_straight_line
+0x5AD1		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5AD8		MOVX	XDATA	0x3C57		MOVX_DPTR	0x3C57		local_straight_line
+0x5ADB		MOVX	XDATA	0x3C58		MOVX_DPTR	0x3C58		local_straight_line
+0x5AFD		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5B07		MOVX	XDATA	0x3C57		MOVX_DPTR	0x3C57		local_straight_line
+0x5B0A		MOVX	XDATA	0x3C58		MOVX_DPTR	0x3C58		local_straight_line
+0x5B2B		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5B35		MOVX	XDATA	0x3C57		MOVX_DPTR	0x3C57		local_straight_line
+0x5B38		MOVX	XDATA	0x3C58		MOVX_DPTR	0x3C58		local_straight_line
+0x5B59		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5B60		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0x5B84		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5B8C		MOVX	XDATA	0x6304		MOVX_DPTR	0x6304		local_straight_line
+0x5B94		MOVX	XDATA	0x6305		MOVX_DPTR	0x6305		local_straight_line
+0x5B9C		MOVX	XDATA	0x6306		MOVX_DPTR	0x6306		local_straight_line
+0x5BA4		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5BAB		MOVX	XDATA	0x6304		MOVX_DPTR	0x6304		local_straight_line
+0x5BCF		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5BD4		MOVX	XDATA	0x3E2E		MOVX_DPTR	0x3E2E		local_straight_line
+0x5C5B		MOVX	XDATA	0x3E2E		MOVX_DPTR	0x3E2E		local_straight_line
+0x5C5E		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5C80		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5C8E		MOVX	XDATA	0x707A		MOVX_DPTR	0x707A		local_straight_line
+0x5C9F		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5CA7		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x5CB6		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5CBE		MOVX	XDATA	0x3E30		MOVX_DPTR	0x3E30		local_straight_line
+0x5CC6		MOVX	XDATA	0x3E30		MOVX_DPTR	0x3E30		local_straight_line
+0x5CDB		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5CE3		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5CE8		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5CF7		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5D20		MOVX	XDATA	0x707A		MOVX_DPTR	0x707A		local_straight_line
+0x5D26		MOVX	XDATA	0x3E2F		MOVX_DPTR	0x3E2F		local_straight_line
+0x5D30		MOVX	XDATA	0x3C1F		MOVX_DPTR	0x3C1F		local_straight_line
+0x5D3A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5D40		MOVX	XDATA	0x3C1F		MOVX_DPTR	0x3C1F		local_straight_line
 0x5D4E	0x5D44	MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
 0x5D57	0x5D44	MOVX	XDATA	0x3C00		MOVX_DPTR	0x3C00		local_straight_line
 0x5D5F	0x5D44	MOVX	XDATA	0x3C66		MOVX_DPTR	0x3C66		local_straight_line
+0x5E36		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
+0x5E7C		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
+0x5E99		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
+0x5EB6		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
+0x5EDD		MOVX	XDATA	0x3C67		MOVX_DPTR	0x3C67		local_straight_line
+0x5EEC		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075		local_straight_line
+0x5EFC		MOVX	XDATA	0x3C67		MOVX_DPTR	0x3C67		local_straight_line
+0x5F07		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0x5F4B		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x5F66		MOVX	XDATA	0x3C72		MOVX_DPTR	0x3C72		local_straight_line
+0x5F71		MOVX	XDATA	0x3C76		MOVX_DPTR	0x3C76		local_straight_line
+0x5F7A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5F81		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5F90		MOVX	XDATA	0x3C72		MOVX_DPTR	0x3C72		local_straight_line
+0x5F9B		MOVX	XDATA	0x3C76		MOVX_DPTR	0x3C76		local_straight_line
+0x5FA4		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5FAA		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5FC9		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5FE0		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5FF4		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x5FF9		MOVX	XDATA	0x3E3E		MOVX_DPTR	0x3E3E		local_straight_line
+0x6009		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6011		MOVX	XDATA	0x3E3E		MOVX_DPTR	0x3E3E		local_straight_line
+0x6019		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x6030		MOVX	XDATA	0x3C72		MOVX_DPTR	0x3C72		local_straight_line
+0x6037		MOVX	XDATA	0x3C76		MOVX_DPTR	0x3C76		local_straight_line
+0x603C		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6041		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x604C		MOVX	XDATA	0x3C72		MOVX_DPTR	0x3C72		local_straight_line
+0x6054		MOVX	XDATA	0x3C76		MOVX_DPTR	0x3C76		local_straight_line
+0x605A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6060		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x606E		MOVX	XDATA	0x3C72		MOVX_DPTR	0x3C72		local_straight_line
+0x6075		MOVX	XDATA	0x3C76		MOVX_DPTR	0x3C76		local_straight_line
+0x607A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x607F		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x608A		MOVX	XDATA	0x32A7		MOVX_DPTR	0x32A7		local_straight_line
+0x6316		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0x6371		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0x637B		MOVX	XDATA	0x6300		MOVX_DPTR	0x6300		local_straight_line
+0x6384		MOVX	XDATA	0x3C19		MOVX_DPTR	0x3C19		local_straight_line
+0x638A		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x638F		MOVX	XDATA	0x3C1F		MOVX_DPTR	0x3C1F		local_straight_line
+0x639A		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01		local_straight_line
+0x639D		MOVX	XDATA	0x3C02		MOVX_DPTR	0x3C02		local_straight_line
+0x63BB		MOVX	XDATA	0x3E3E		MOVX_DPTR	0x3E3E		local_straight_line
+0x63BE		MOVX	XDATA	0x3E3F		MOVX_DPTR	0x3E3F		local_straight_line
+0x63D1		MOVX	XDATA	0x3CD4		MOVX_DPTR	0x3CD4		local_straight_line
+0x63D6		MOVX	XDATA	0x3C1F		MOVX_DPTR	0x3C1F		local_straight_line
+0x6431		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0x6595		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x65B4		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6ACD		MOVX	XDATA	0x3188		MOVX_DPTR	0x3188		local_straight_line
+0x6B13		MOVX	XDATA	0x329A		MOVX_DPTR	0x329A		local_straight_line
+0x6B1B		MOVX	XDATA	0x329B		MOVX_DPTR	0x329B		local_straight_line
+0x6B23		MOVX	XDATA	0x329C		MOVX_DPTR	0x329C		local_straight_line
+0x6B2B		MOVX	XDATA	0x329D		MOVX_DPTR	0x329D		local_straight_line
+0x6CFA		MOVX	XDATA	0x3C5B		MOVX_DPTR	0x3C5B		local_straight_line
+0x6D00		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6D0F		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6D5C		MOVX	XDATA	0x3C5C		MOVX_DPTR	0x3C5C		local_straight_line
+0x6D62		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6D71		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6DBE		MOVX	XDATA	0x3C5D		MOVX_DPTR	0x3C5D		local_straight_line
+0x6DC4		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6DD3		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6E20		MOVX	XDATA	0x3C5F		MOVX_DPTR	0x3C5F		local_straight_line
+0x6E26		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6E35		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6E82		MOVX	XDATA	0x3C60		MOVX_DPTR	0x3C60		local_straight_line
+0x6E88		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6E97		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6EE4		MOVX	XDATA	0x3C61		MOVX_DPTR	0x3C61		local_straight_line
+0x6EEA		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6EF9		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6F46		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62		local_straight_line
+0x6F4C		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6F5B		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6FA8		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63		local_straight_line
+0x6FAE		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x6FBD		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x700A		MOVX	XDATA	0x3C64		MOVX_DPTR	0x3C64		local_straight_line
+0x7010		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x701E		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x707C		MOVX	XDATA	0x7035		MOVX_DPTR	0x7035		local_straight_line
+0x70A9		MOVX	XDATA	0x7035		MOVX_DPTR	0x7035		local_straight_line
 0x7168	0x7121	MOVX	XDATA	0x3E4C		MOVX_DPTR	0x3E4C		local_straight_line
 0x7170	0x7121	MOVX	XDATA	0x3E4C		MOVX_DPTR	0x3E4C		local_straight_line
 0x7191	0x7181	MOVX	XDATA	0x7035		MOVX_DPTR	0x7035		local_straight_line
@@ -270,6 +433,7 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x7928	0x7879	MOVX	XDATA	0x329D		MOVX_DPTR	0x329D		local_straight_line
 0x793A	0x7879	MOVX	XDATA	0x329D		MOVX_DPTR	0x329D		local_straight_line
 0x7942	0x7879	MOVX	XDATA	0x3012		MOVX_DPTR	0x3012		local_straight_line
+0x794F		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
 0x7967	0x7964	MOVX	XDATA	0x3014		MOVX_DPTR	0x3014		local_straight_line
 0x797A	0x7964	MOVX	XDATA	0x3013		MOVX_DPTR	0x3013		local_straight_line
 0x798B	0x7964	MOVX	XDATA	0x3013		MOVX_DPTR	0x3013		local_straight_line
@@ -485,6 +649,64 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x8A4F	0x88FA	MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
 0x8A59	0x88FA	MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
 0x8A63	0x88FA	MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0x8AF2		MOVX	XDATA	0x5340		MOVX_DPTR	0x5340		local_straight_line
+0x8B24		MOVX	XDATA	0x3023		MOVX_DPTR	0x3023		local_straight_line
+0x8B2C		MOVX	XDATA	0x3022		MOVX_DPTR	0x3022		local_straight_line
+0x8B6C		MOVX	XDATA	0x50E6		MOVX_DPTR	0x50E6		local_straight_line
+0x8B79		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
+0x8BCE		MOVX	XDATA	0x7037		MOVX_DPTR	0x7037		local_straight_line
+0x8BED		MOVX	XDATA	0x7038		MOVX_DPTR	0x7038		local_straight_line
+0x8BF5		MOVX	XDATA	0x703C		MOVX_DPTR	0x703C		local_straight_line
+0x8BFD		MOVX	XDATA	0x703D		MOVX_DPTR	0x703D		local_straight_line
+0x8C05		MOVX	XDATA	0x703E		MOVX_DPTR	0x703E		local_straight_line
+0x8C11		MOVX	XDATA	0x703F		MOVX_DPTR	0x703F		local_straight_line
+0x8C19		MOVX	XDATA	0x7040		MOVX_DPTR	0x7040		local_straight_line
+0x8C21		MOVX	XDATA	0x7041		MOVX_DPTR	0x7041		local_straight_line
+0x8C29		MOVX	XDATA	0x7039		MOVX_DPTR	0x7039		local_straight_line
+0x8C31		MOVX	XDATA	0x7042		MOVX_DPTR	0x7042		local_straight_line
+0x8C50		MOVX	XDATA	0x7043		MOVX_DPTR	0x7043		local_straight_line
+0x8C9E		MOVX	XDATA	0x3023		MOVX_DPTR	0x3023		local_straight_line
+0x8CA6		MOVX	XDATA	0x3022		MOVX_DPTR	0x3022		local_straight_line
+0x8D5F		MOVX	XDATA	0x50E6		MOVX_DPTR	0x50E6		local_straight_line
+0x8D6C		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
+0x8D75		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A		local_straight_line
+0x8D79		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A		local_straight_line
+0x8DCB		MOVX	XDATA	0x502E		MOVX_DPTR	0x502E		local_straight_line
+0x8DD7		MOVX	XDATA	0x008B		MOVX_DPTR	0x008B		local_straight_line
+0x8DF1		MOVX	XDATA	0x5002		MOVX_DPTR	0x5002		local_straight_line
+0x8DFA		MOVX	XDATA	0x502D		MOVX_DPTR	0x502D		local_straight_line
+0x8E00		MOVX	XDATA	0x502C		MOVX_DPTR	0x502C		local_straight_line
+0x8E13		MOVX	XDATA	0x5054		MOVX_DPTR	0x5054		local_straight_line
+0x8E1E		MOVX	XDATA	0x008B		MOVX_DPTR	0x008B		local_straight_line
+0x8E2D		MOVX	XDATA	0x0088		MOVX_DPTR	0x0088		local_straight_line
+0x8E43		MOVX	XDATA	0x008E		MOVX_DPTR	0x008E		local_straight_line
+0x8E4C		MOVX	XDATA	0x7037		MOVX_DPTR	0x7037		local_straight_line
+0x8E5B		MOVX	XDATA	0x3008		MOVX_DPTR	0x3008		local_straight_line
+0x8E5F		MOVX	XDATA	0x3009		MOVX_DPTR	0x3009		local_straight_line
+0x8E63		MOVX	XDATA	0x300A		MOVX_DPTR	0x300A		local_straight_line
+0x8E67		MOVX	XDATA	0x300B		MOVX_DPTR	0x300B		local_straight_line
+0x8E83		MOVX	XDATA	0x300C		MOVX_DPTR	0x300C		local_straight_line
+0x8E88		MOVX	XDATA	0x300D		MOVX_DPTR	0x300D		local_straight_line
+0x8E9F		MOVX	XDATA	0x3C19		MOVX_DPTR	0x3C19		local_straight_line
+0x8EA5		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01		local_straight_line
+0x8EA8		MOVX	XDATA	0x3C02		MOVX_DPTR	0x3C02		local_straight_line
+0x8EB8		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8ED6		MOVX	XDATA	0x3E40		MOVX_DPTR	0x3E40		local_straight_line
+0x8ED9		MOVX	XDATA	0x3E41		MOVX_DPTR	0x3E41		local_straight_line
+0x8EF5		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x8EFA		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F00		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F06		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F0B		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F16		MOVX	XDATA	0x3013		MOVX_DPTR	0x3013		local_straight_line
+0x8F22		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x8F27		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F2F		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x8F34		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F39		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x8F41		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x8F63		MOVX	XDATA	0x3C19		MOVX_DPTR	0x3C19		local_straight_line
+0x8F71		MOVX	XDATA	?		MOVX_DPTR			unresolved
 0x901C	0x9011	MOVX	XDATA	0x0000		MOVX_DPTR	0x0000		local_straight_line
 0x9023	0x9011	MOVX	XDATA	0x0110		MOVX_DPTR	0x0110		local_straight_line
 0x9034	0x9011	MOVX	XDATA	0x3010		MOVX_DPTR	0x3010		local_straight_line
@@ -547,6 +769,19 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x9442	0x93C7	MOVX	XDATA	0x007B		MOVX_DPTR	0x007B		local_straight_line
 0x947F	0x93C7	MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
 0x9486	0x93C7	MOVX	XDATA	0x7084		MOVX_DPTR	0x7084		local_straight_line
+0x949C		MOVX	XDATA	0x32A7		MOVX_DPTR	0x32A7		local_straight_line
+0x94A2		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x94CF		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x94D4		MOVX	XDATA	0x7076		MOVX_DPTR	0x7076		local_straight_line
+0x9517		MOVX	XDATA	0x3C4A		MOVX_DPTR	0x3C4A		local_straight_line
+0x951D		MOVX	XDATA	0x7036		MOVX_DPTR	0x7036		local_straight_line
+0x9526		MOVX	XDATA	0x7037		MOVX_DPTR	0x7037		local_straight_line
+0x9530		MOVX	XDATA	0x7036		MOVX_DPTR	0x7036		local_straight_line
+0x9543		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
+0x9555		MOVX	XDATA	0x3018		MOVX_DPTR	0x3018		local_straight_line
+0x955D		MOVX	XDATA	0x301E		MOVX_DPTR	0x301E		local_straight_line
+0x9563		MOVX	XDATA	0x3012		MOVX_DPTR	0x3012		local_straight_line
+0x9568		MOVX	XDATA	0x3011		MOVX_DPTR	0x3011		local_straight_line
 0x95AB	0x959D	MOVX	XDATA	0x3DDF		MOVX_DPTR	0x3DDF		local_straight_line
 0x95B0	0x959D	MOVX	XDATA	0x3DDE		MOVX_DPTR	0x3DDE		local_straight_line
 0x95EB	0x959D	MOVX	XDATA	0x70C0		MOVX_DPTR	0x70C0		local_straight_line
@@ -632,6 +867,11 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x9C6E	0x9B93	MOVX	XDATA	0x3E20		MOVX_DPTR	0x3E20		local_straight_line
 0x9C87	0x9B93	MOVX	XDATA	0x3E25		MOVX_DPTR	0x3E25		local_straight_line
 0x9C91	0x9B93	MOVX	XDATA	0x3E1C		MOVX_DPTR	0x3E1C		local_straight_line
+0x9D52		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064		local_straight_line
+0x9D6D		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
+0x9D77		MOVX	XDATA	0x3E1F		MOVX_DPTR	0x3E1F		local_straight_line
+0x9D7D		MOVX	XDATA	0x3E1E		MOVX_DPTR	0x3E1E		local_straight_line
+0x9DA4		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026		local_straight_line
 0x9DEA		MOVX	XDATA	0x3E25		MOVX_DPTR	0x3E25		local_straight_line
 0x9DFE	0x9B93	MOVX	XDATA	0x70C0		MOVX_DPTR	0x70C0		local_straight_line
 0x9E02	0x9B93	MOVX	XDATA	0x70C1		MOVX_DPTR	0x70C1		local_straight_line
@@ -696,6 +936,7 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xA583	0xA580	MOVX	XDATA	0x3E36		MOVX_DPTR	0x3E36		local_straight_line
 0xA596	0xA580	MOVX	XDATA	0x3E34		MOVX_DPTR	0x3E34		local_straight_line
 0xA5A9	0xA5A6	MOVX	XDATA	0x3E34		MOVX_DPTR	0x3E34		local_straight_line
+0xA5BA		MOVX	XDATA	0x300F		MOVX_DPTR	0x300F		local_straight_line
 0xA655	0xA636	MOVX	XDATA	0x3017		MOVX_DPTR	0x3017		local_straight_line
 0xA658	0xA636	MOVX	XDATA	0x3018		MOVX_DPTR	0x3018		local_straight_line
 0xA688	0xA680	MOVX	XDATA	0x3010		MOVX_DPTR	0x3010		local_straight_line
@@ -837,7 +1078,15 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xB282	0xB26B	MOVX	XDATA	0x7051		MOVX_DPTR	0x7051		local_straight_line
 0xB28D	0xB287	MOVX	XDATA	0x7054		MOVX_DPTR	0x7054		local_straight_line
 0xB294	0xB287	MOVX	XDATA	0x7058		MOVX_DPTR	0x7058		local_straight_line
+0xB2CC		MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
+0xB2D2		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xB2D8		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xB2DF		MOVX	XDATA	0x7059		MOVX_DPTR	0x7059		local_straight_line
 0xB2EC	0xB2E4	MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
+0xB2FC		MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
+0xB30E		MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
+0xB320		MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
+0xB332		MOVX	XDATA	0x32A8		MOVX_DPTR	0x32A8		local_straight_line
 0xB338	0xB2E4	MOVX	XDATA	0x7058		MOVX_DPTR	0x7058		ghidra_inferred
 0xB33D	0xB2E4	MOVX	XDATA	0x7058		MOVX_DPTR	0x7058		ghidra_inferred
 0xB353	0xB350	MOVX	XDATA	0x70B7		MOVX_DPTR	0x70B7		local_straight_line
@@ -874,13 +1123,39 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xB654		MOVX	XDATA	0x32A5		MOVX_DPTR	0x32A5		local_straight_line
 0xB65A		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
 0xB66D		MOVX	XDATA	0x7086		MOVX_DPTR	0x7086		local_straight_line
+0xB738		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xB746		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xB79D		MOVX	XDATA	0x3E53		MOVX_DPTR	0x3E53		local_straight_line
+0xB7D0		MOVX	XDATA	0x3E25		MOVX_DPTR	0x3E25		local_straight_line
+0xB7DA		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094		local_straight_line
+0xB810		MOVX	XDATA	0x3C5E		MOVX_DPTR	0x3C5E		local_straight_line
+0xB827		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078		local_straight_line
+0xB836		MOVX	XDATA	0x32A5		MOVX_DPTR	0x32A5		local_straight_line
+0xB83C		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xB85E		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078		local_straight_line
+0xB871		MOVX	XDATA	0x32A5		MOVX_DPTR	0x32A5		local_straight_line
+0xB877		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xB8A3		MOVX	XDATA	0x3217		MOVX_DPTR	0x3217		local_straight_line
+0xB8D3		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078		local_straight_line
+0xB8F3		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078		local_straight_line
+0xB91C		MOVX	XDATA	0x32A5		MOVX_DPTR	0x32A5		local_straight_line
+0xB925		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xB997		MOVX	XDATA	0x7095		MOVX_DPTR	0x7095		local_straight_line
+0xBA21		MOVX	XDATA	0x0001		MOVX_DPTR	0x0001		local_straight_line
+0xBA28		MOVX	XDATA	0x70F3		MOVX_DPTR	0x70F3		local_straight_line
+0xBA30		MOVX	XDATA	0x0001		MOVX_DPTR	0x0001		local_straight_line
 0xBA3B	0xBA35	MOVX	XDATA	0x0001		MOVX_DPTR	0x0001		local_straight_line
 0xBA42	0xBA35	MOVX	XDATA	0x70F3		MOVX_DPTR	0x70F3		local_straight_line
+0xBA66		MOVX	XDATA	0x311F		MOVX_DPTR	0x311F		local_straight_line
 0xBA7C	0xBA79	MOVX	XDATA	0x7267		MOVX_DPTR	0x7267		local_straight_line
 0xBA89	0xBA79	MOVX	XDATA	0x7079		MOVX_DPTR	0x7079		local_straight_line
 0xBA8F	0xBA79	MOVX	XDATA	0x7267		MOVX_DPTR	0x7267		local_straight_line
 0xBA9C	0xBA79	MOVX	XDATA	0x7079		MOVX_DPTR	0x7079		local_straight_line
 0xBAA2	0xBA79	MOVX	XDATA	0x7267		MOVX_DPTR	0x7267		local_straight_line
+0xBAAA		MOVX	XDATA	0x7073		MOVX_DPTR	0x7073		local_straight_line
+0xBAAE		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBAB6		MOVX	XDATA	0x7073		MOVX_DPTR	0x7073		local_straight_line
+0xBABA		MOVX	XDATA	?		MOVX_DPTR			unresolved
 0xBAC2	0xBABF	MOVX	XDATA	0x7072		MOVX_DPTR	0x7072		local_straight_line
 0xBAC9	0xBABF	MOVX	XDATA	0x7280		MOVX_DPTR	0x7280		local_straight_line
 0xBACD	0xBABF	MOVX	XDATA	0x7280		MOVX_DPTR	0x7280		ghidra_inferred
@@ -891,6 +1166,68 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xBAF9	0xBAD2	MOVX	XDATA	0x7074		MOVX_DPTR	0x7074		local_straight_line
 0xBB15	0xBAD2	MOVX	XDATA	0x7074		MOVX_DPTR	0x7074		local_straight_line
 0xBB20	0xBAD2	MOVX	XDATA	0x7074		MOVX_DPTR	0x7074		local_straight_line
+0xBB33		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBB8A		MOVX	XDATA	0x7003		MOVX_DPTR	0x7003		local_straight_line
+0xBC46		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBC8C		MOVX	XDATA	0x7003		MOVX_DPTR	0x7003		local_straight_line
+0xBCF2		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBD8C		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBD99		MOVX	XDATA	0x5085		MOVX_DPTR	0x5085		local_straight_line
+0xBDA2		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064		local_straight_line
+0xBDAB		MOVX	XDATA	0x70F3		MOVX_DPTR	0x70F3		local_straight_line
+0xBDC2		MOVX	XDATA	0x50EC		MOVX_DPTR	0x50EC		local_straight_line
+0xBDDC		MOVX	XDATA	0x5009		MOVX_DPTR	0x5009		local_straight_line
+0xBDED		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xBDF1		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBDF5		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBDFD		MOVX	XDATA	0x5008		MOVX_DPTR	0x5008		local_straight_line
+0xBE04		MOVX	XDATA	0x3E39		MOVX_DPTR	0x3E39		local_straight_line
+0xBE0F		MOVX	XDATA	0x5008		MOVX_DPTR	0x5008		local_straight_line
+0xBE24		MOVX	XDATA	0x7079		MOVX_DPTR	0x7079		local_straight_line
+0xBE2E		MOVX	XDATA	0x31A0		MOVX_DPTR	0x31A0		local_straight_line
+0xBE37		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xBE3C		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBE41		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBE48		MOVX	XDATA	0x3E37		MOVX_DPTR	0x3E37		local_straight_line
+0xBE50		MOVX	XDATA	0x0001		MOVX_DPTR	0x0001		local_straight_line
+0xBE63		MOVX	XDATA	0x3E38		MOVX_DPTR	0x3E38		local_straight_line
+0xBE6B		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xBE70		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBE75		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBE95		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xBE9A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBE9E		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBEA5		MOVX	XDATA	0x3E37		MOVX_DPTR	0x3E37		local_straight_line
+0xBED5		MOVX	XDATA	0x3E39		MOVX_DPTR	0x3E39		local_straight_line
+0xBEE6		MOVX	XDATA	0x5001		MOVX_DPTR	0x5001		local_straight_line
+0xBEED		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBEFA		MOVX	XDATA	0x5085		MOVX_DPTR	0x5085		local_straight_line
+0xBF03		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064		local_straight_line
+0xBF38		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBF45		MOVX	XDATA	0x5085		MOVX_DPTR	0x5085		local_straight_line
+0xBF4E		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064		local_straight_line
+0xBF6D		MOVX	XDATA	0x50EC		MOVX_DPTR	0x50EC		local_straight_line
+0xBF7F		MOVX	XDATA	0x7074		MOVX_DPTR	0x7074		local_straight_line
+0xBF8B		MOVX	XDATA	0x5009		MOVX_DPTR	0x5009		local_straight_line
+0xBF92		MOVX	XDATA	0x3E54		MOVX_DPTR	0x3E54		local_straight_line
+0xBFB5		MOVX	XDATA	0x4C0F		MOVX_DPTR	0x4C0F		local_straight_line
+0xBFC2		MOVX	XDATA	0x5085		MOVX_DPTR	0x5085		local_straight_line
+0xBFCB		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064		local_straight_line
+0xBFD5		MOVX	XDATA	0x5001		MOVX_DPTR	0x5001		local_straight_line
+0xBFDF		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xBFE3		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBFE7		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBFEF		MOVX	XDATA	0x5008		MOVX_DPTR	0x5008		local_straight_line
+0xBFF6		MOVX	XDATA	0x3E54		MOVX_DPTR	0x3E54		local_straight_line
+0xC001		MOVX	XDATA	0x5008		MOVX_DPTR	0x5008		local_straight_line
+0xC01C		MOVX	XDATA	0x7079		MOVX_DPTR	0x7079		local_straight_line
+0xC026		MOVX	XDATA	0x000F		MOVX_DPTR	0x000F		local_straight_line
+0xC02D		MOVX	XDATA	0x000F		MOVX_DPTR	0x000F		local_straight_line
+0xC037		MOVX	XDATA	0x4C12		MOVX_DPTR	0x4C12		local_straight_line
+0xC03D		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xC048		MOVX	XDATA	0x7074		MOVX_DPTR	0x7074		local_straight_line
+0xC054		MOVX	XDATA	0x5080		MOVX_DPTR	0x5080		local_straight_line
+0xC05C		MOVX	XDATA	?		MOVX_DPTR			unresolved
 0xC080	0xC06B	MOVX	XDATA	0x3E4A		MOVX_DPTR	0x3E4A		local_straight_line
 0xC088	0xC06B	MOVX	XDATA	0x7003		MOVX_DPTR	0x7003		local_straight_line
 0xC08F	0xC06B	MOVX	XDATA	0x7055		MOVX_DPTR	0x7055		local_straight_line
@@ -900,6 +1237,13 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xC0C2	0xC06B	MOVX	XDATA	0x707A		MOVX_DPTR	0x707A		local_straight_line
 0xC0C8	0xC06B	MOVX	XDATA	0x3E4B		MOVX_DPTR	0x3E4B		local_straight_line
 0xC0D6	0xC06B	MOVX	XDATA	0x707B		MOVX_DPTR	0x707B		local_straight_line
+0xC0E8		MOVX	XDATA	0x3CED		MOVX_DPTR	0x3CED		local_straight_line
+0xC141		MOVX	XDATA	0x3218		MOVX_DPTR	0x3218		local_straight_line
+0xC144		MOVX	XDATA	0x3219		MOVX_DPTR	0x3219		local_straight_line
+0xC147		MOVX	XDATA	0x321A		MOVX_DPTR	0x321A		local_straight_line
+0xC14A		MOVX	XDATA	0x321B		MOVX_DPTR	0x321B		local_straight_line
+0xC16E		MOVX	XDATA	0x7019		MOVX_DPTR	0x7019		local_straight_line
+0xC1C8		MOVX	XDATA	0x5014		MOVX_DPTR	0x5014		local_straight_line
 0xC1D7	0xC1D4	MOVX	XDATA	0x32A9		MOVX_DPTR	0x32A9		local_straight_line
 0xC1E3	0xC1D4	MOVX	XDATA	0x7058		MOVX_DPTR	0x7058		local_straight_line
 0xC1EF	0xC1D4	MOVX	XDATA	0x7100		MOVX_DPTR	0x7100		local_straight_line

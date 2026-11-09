@@ -442,7 +442,7 @@ def tsv_text(
     output.write(MAGIC + "\n")
     output.write(f"# firmware={version}; image_sha256={image_hash}\n")
     output.write(
-        "# Decoded sites only; unknown targets and inferred addresses are not confirmed.\n"
+        "# Ghidra-decoded sites, including D52-seeded blocks; unknown targets remain unconfirmed.\n"
     )
     writer = csv.DictWriter(
         output, fieldnames=columns, delimiter="\t", lineterminator="\n"

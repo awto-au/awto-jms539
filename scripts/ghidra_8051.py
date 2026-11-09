@@ -37,7 +37,7 @@ VERSIONS = {
     "40.16": ("v40_16_code.bin", "v40_16_code.d52"),
 }
 SLOT_STARTS = tuple(range(0x4000, 0x41F1, 0x10))
-INLINE_BYTE_CASES = {
+POST_CALL_SEQUENCE_CASES = {
     "40.06": (0x4AA9, bytes.fromhex("12 1B F0 00 00 00 B4")),
     "40.16": (0x4B55, bytes.fromhex("12 1B F0 00 00 00 3C")),
 }
@@ -136,12 +136,12 @@ def read_verified_input(version: str) -> tuple[bytes, Path, Path]:
         raise PipelineError(
             f"{binary_path.name}: offset 0x200 does not match D52 bytes at CPU 0x4200"
         )
-    inline_address, inline_bytes = INLINE_BYTE_CASES[version]
-    inline_offset = inline_address - BASE_ADDRESS
-    if image[inline_offset : inline_offset + len(inline_bytes)] != inline_bytes:
+    callsite, observed_bytes = POST_CALL_SEQUENCE_CASES[version]
+    sequence_offset = callsite - BASE_ADDRESS
+    if image[sequence_offset : sequence_offset + len(observed_bytes)] != observed_bytes:
         raise PipelineError(
-            f"{binary_path.name}: expected observed inline-byte sequence at "
-            f"CPU 0x{inline_address:04X}"
+            f"{binary_path.name}: expected observed post-call sequence at "
+            f"CPU 0x{callsite:04X}"
         )
 
     dispatcher, table_start, table_end, df_entry, df_target, default = DISPATCH_CASES[
@@ -449,6 +449,7 @@ def make_manifest(
                 "Only CPU 0x4000..0xFFFF is supplied; CPU 0x0000..0x3FFF is not mapped.",
                 "A reference to ROM helper 0x1BF0 remains unresolved; no ROM bytes or behavior are assumed.",
                 "Any low-address 8051 register/data spaces in Ghidra are uninitialized processor spaces, not ROM or a JMS539-specific SFR map.",
+                "D52-derived MOV DPTR,#0x7xxx entries are disassembled provisionally when not already covered; these are candidate instruction starts, not semantic or function labels.",
                 "The seeded code has an unresolved transfer to CODE:0x362A; decompiler output that reaches it may be partial.",
                 "No Keil ABI inference, Keil-specific return repair, or hardware-register labels are applied; names are limited to directly observed behavior.",
             ],
@@ -476,21 +477,18 @@ def make_manifest(
             "status": "Ghidra decodes LJMP; target is outside the supplied code slice",
         }
     ]
-    callsite, observed_bytes = INLINE_BYTE_CASES[version]
+    callsite, observed_bytes = POST_CALL_SEQUENCE_CASES[version]
     payload_start = callsite + 3
-    manifest["uncertain_inline_bytes"] = {
+    manifest["post_call_sequence"] = {
         "callsite": f"0x{callsite:04X}",
         "call_bytes": "12 1B F0",
         "target": "0x1BF0",
-        "payload_start": f"0x{payload_start:04X}",
-        "payload_bytes": " ".join(f"{byte:02X}" for byte in observed_bytes[3:]),
-        "status": "observed bytes; helper behavior and return semantics unknown",
-        "handling": (
-            f"The pre-analysis script defines 0x{payload_start:04X}.."
-            f"0x{payload_start + 3:04X} as byte data before disassembly. It does not "
-            "seed a continuation after these bytes or repair a return."
-        ),
-        "source": "Target-specific observation checked against the local binary bytes.",
+        "nop_start": f"0x{payload_start:04X}",
+        "nop_bytes": "00 00 00",
+        "following_instruction_byte": f"{observed_bytes[6]:02X}",
+        "status": "D52 decodes three NOPs and an instruction after the unmapped call",
+        "handling": "Three NOPs are decoded as code; no ROM helper behavior or return semantics are inferred.",
+        "source": "D52 listing checked against exact local image bytes.",
     }
     manifest["unresolved_control_flow"].append(
         {
@@ -550,6 +548,7 @@ def build_import_command(
         "-preScript",
         "SeedJms5398051.java",
         version,
+        str(input_paths(version)[1]),
     ]
     command.extend(
         findings_script_arguments(
@@ -578,6 +577,10 @@ def build_regen_command(
         "1",
         "-scriptPath",
         str(SCRIPT_DIR),
+        "-postScript",
+        "RecoverUndecodedJms5398051.java",
+        version,
+        str(input_paths(version)[1]),
     ]
     command.extend(
         findings_script_arguments(
@@ -1116,7 +1119,7 @@ def make_parser() -> argparse.ArgumentParser:
             help=(
                 "import and analyze the raw slices"
                 if name == "import"
-                else "re-export saved Ghidra projects without reanalysis"
+                else "recover D52-correlated XDATA code and re-export saved projects"
             ),
         )
         add_version_argument(subparser)

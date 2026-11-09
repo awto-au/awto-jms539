@@ -3,7 +3,7 @@
 # address	name	type	comment	status	confidence
 # [fw] records directly observed behavior; [guess] records an interpretation not applied as a name.
 CODE:4200	check_signature_initialization_candidate	func	Calls the XDATA signature checker and initializes several values if it returns carry set; the overall role is not established.	[guess]	med
-CODE:4B58	inline_1bf0_data_candidate	label	00 00 00 3C follow LCALL 0x1BF0; a nearby branch skips the four bytes. ROM helper and return semantics are unknown.	[guess]	med
+CODE:4B58	post_1bf0_nop_sequence	label	Three NOPs follow LCALL 0x1BF0; D52 identifies an instruction at 0x4B5B, which Ghidra currently leaves undecoded. ROM helper behavior and return semantics remain unknown.	[guess]	med
 CODE:7CAE	command_dispatch_candidate	func	Loads XDATA 0x300F and calls unavailable 0x1C2D before a sorted target/opcode table; dispatch semantics are inferred.	[guess]	med
 CODE:7CB5	command_table_candidate	label	36 sorted three-byte target/opcode entries, followed by 00 00 and default 0x7F59; DF entry points to 0x7D84.	[guess]	med
 CODE:7D84	df_command_path_candidate	func	Apparent DF table target; checks byte at XDATA 0x301A and forwards or processes paths including FB.	[guess]	med

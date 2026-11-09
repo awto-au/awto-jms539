@@ -33,22 +33,6 @@ public class SeedJms5398051 extends GhidraScript {
         }
     }
 
-    private void defineInlineBytes(long address, int[] bytes) throws Exception {
-        for (int i = 0; i < bytes.length; i++) {
-            Address itemAddress = toAddr(address + i);
-            if (unsignedByte(address + i) != bytes[i]) {
-                throw new IllegalStateException(
-                    String.format("Inline-byte signature mismatch at 0x%04x", address + i));
-            }
-            if (currentProgram.getListing().getInstructionAt(itemAddress) != null ||
-                currentProgram.getListing().getDefinedDataAt(itemAddress) != null) {
-                throw new IllegalStateException(
-                    String.format("Unexpected existing code unit at 0x%04x", address + i));
-            }
-            createData(itemAddress, ByteDataType.dataType);
-        }
-    }
-
     private void disassembleObservedCall(long address) throws Exception {
         Address callsite = toAddr(address);
         if (currentProgram.getListing().getInstructionAt(callsite) == null &&
@@ -155,10 +139,12 @@ public class SeedJms5398051 extends GhidraScript {
     @Override
     protected void run() throws Exception {
         String[] args = getScriptArgs();
-        if (args.length != 1 || !("40.06".equals(args[0]) || "40.16".equals(args[0]))) {
-            throw new IllegalArgumentException("Expected firmware version 40.06 or 40.16");
+        if (args.length != 2 || !("40.06".equals(args[0]) || "40.16".equals(args[0]))) {
+            throw new IllegalArgumentException(
+                "Expected firmware version 40.06 or 40.16 and its D52 listing path");
         }
         String version = args[0];
+        String d52Path = args[1];
         Address imageStart = toAddr(0x4000);
         Address imageEnd = toAddr(0xffff);
         if (currentProgram.getMemory().getBlock(imageStart) == null ||
@@ -176,16 +162,13 @@ public class SeedJms5398051 extends GhidraScript {
         long dfTarget;
         Set<Long> switchTargets = new LinkedHashSet<>();
         if ("40.06".equals(version)) {
-            // These target-specific observed bytes follow an unresolved ROM call.
-            // Preserve them as data before disassembly; do not infer return behavior.
+            // These NOPs precede a D52-decoded CJNE instruction after an unresolved ROM call.
             requireBytes(0x4aa9, 0x12, 0x1b, 0xf0, 0x00, 0x00, 0x00, 0xb4);
-            defineInlineBytes(0x4aac, new int[] {0x00, 0x00, 0x00, 0xb4});
             currentProgram.getListing().setComment(
                 toAddr(0x4aac),
                 CodeUnit.PLATE_COMMENT,
-                "UNCERTAIN INLINE BYTES: 00 00 00 B4 follow LCALL 0x1BF0. " +
-                "ROM helper behavior and return semantics are unknown. " +
-                "Preserved as byte data; no continuation at 0x4AB0 or return fix is assumed.");
+                "Three NOP instructions follow LCALL 0x1BF0; D52 decodes CJNE at 0x4AAF. " +
+                "The ROM helper behavior and return semantics remain unknown.");
             currentProgram.getListing().setComment(
                 toAddr(0x4aa9),
                 CodeUnit.PLATE_COMMENT,
@@ -200,15 +183,13 @@ public class SeedJms5398051 extends GhidraScript {
             protectSwitchTable(0xa5bb, 0xa5be, 0xa609, 0xa66b, switchTargets);
         }
         else {
-            // Preserve the analogous observed inline bytes after the same unmapped ROM call.
+            // These NOPs precede a D52-decoded instruction after an unresolved ROM call.
             requireBytes(0x4b55, 0x12, 0x1b, 0xf0, 0x00, 0x00, 0x00, 0x3c);
-            defineInlineBytes(0x4b58, new int[] {0x00, 0x00, 0x00, 0x3c});
             currentProgram.getListing().setComment(
                 toAddr(0x4b58),
                 CodeUnit.PLATE_COMMENT,
-                "UNCERTAIN INLINE BYTES: 00 00 00 3C follow LCALL 0x1BF0. " +
-                "ROM helper behavior and return semantics are unknown. " +
-                "Preserved as byte data; no continuation or return fix is assumed.");
+                "Three NOP instructions follow LCALL 0x1BF0; D52 decodes an instruction at 0x4B5B. " +
+                "The ROM helper behavior and return semantics remain unknown.");
             currentProgram.getListing().setComment(
                 toAddr(0x4b55),
                 CodeUnit.PLATE_COMMENT,
@@ -241,11 +222,6 @@ public class SeedJms5398051 extends GhidraScript {
             "; none is asserted to be an interrupt vector or semantic name.");
         println("Protected three apparent tables and seeded " + switchTargets.size() +
                 " provisional table targets; no dispatch behavior is asserted.");
-        if ("40.06".equals(version)) {
-            println("Preserved 0x4AAC..0x4AAF as uncertain inline byte data; ROM 0x1BF0 is unmapped.");
-        }
-        else {
-            println("Preserved 0x4B58..0x4B5B as uncertain inline byte data; ROM 0x1BF0 is unmapped.");
-        }
+        runScript("RecoverUndecodedJms5398051.java", new String[] {version, d52Path});
     }
 }

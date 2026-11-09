@@ -1,6 +1,6 @@
 # JMS539 decoded memory-write inventory
 # firmware=40.16; image_sha256=b1107ea583c26a3b7040e23c54131107aeaf95761e2fcad66372abc70655070b
-# Decoded sites only; unknown targets and inferred addresses are not confirmed.
+# Ghidra-decoded sites, including D52-seeded blocks; unknown targets remain unconfirmed.
 pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	resolution
 0x4000	0x4000	LCALL	IRAM	?		stack_push_2			unresolved
 0x4000	0x4000	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
@@ -587,6 +587,10 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x47BD	0x47A7	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0x47C1	0x47A7	MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_00	local_straight_line
 0x47C2	0x47A7	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x47C3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x47C3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x47C7		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x47C8		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x4812	0x4812	MOV	SFR	0x82		direct_byte			encoded
 0x4814	0x4812	MOV	SFR	0x83		direct_byte			encoded
 0x4817	0x4812	MOVX	XDATA	?		MOVX_DPTR			unresolved
@@ -604,6 +608,59 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x483C	0x4820	MOV	SFR	0xF0		direct_byte			encoded
 0x4840	0x4820	XCH	SFR	0x83		direct_byte			encoded
 0x4844	0x4820	XCH	SFR	0x83		direct_byte			encoded
+0x490A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x490A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x490E		MOVX	XDATA	0x7020		MOVX_DPTR	0x7020		local_straight_line
+0x4910		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4910		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4911		MOVX	XDATA	0x7021		MOVX_DPTR	0x7021		local_straight_line
+0x4912		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4912		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4914		MOVX	XDATA	0x7022		MOVX_DPTR	0x7022	constant_00	local_straight_line
+0x4915		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4915		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4918		MOVX	XDATA	0x7023		MOVX_DPTR	0x7023	constant_64	local_straight_line
+0x4919		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4919		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x491B		MOVX	XDATA	0x7024		MOVX_DPTR	0x7024	constant_00	local_straight_line
+0x491C		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x491C		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x493E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x493E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4942		MOVX	XDATA	0x7020		MOVX_DPTR	0x7020		local_straight_line
+0x4944		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4944		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4945		MOVX	XDATA	0x7021		MOVX_DPTR	0x7021		local_straight_line
+0x4946		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4946		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4948		MOVX	XDATA	0x7022		MOVX_DPTR	0x7022	constant_00	local_straight_line
+0x4949		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4949		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x494C		MOVX	XDATA	0x7023		MOVX_DPTR	0x7023	constant_80	local_straight_line
+0x494D		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x494D		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x494F		MOVX	XDATA	0x7024		MOVX_DPTR	0x7024	constant_00	local_straight_line
+0x4950		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4950		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4953		MOVX	XDATA	0x7025		MOVX_DPTR	0x7025	constant_02	local_straight_line
+0x4954		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4954		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4958		MOVX	XDATA	0x8010		MOVX_DPTR	0x8010	constant_00	local_straight_line
+0x4959		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4959		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x495C		MOVX	XDATA	0x8011		MOVX_DPTR	0x8011	constant_64	local_straight_line
+0x495D		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x495D		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x495F		MOVX	XDATA	0x8012		MOVX_DPTR	0x8012	constant_00	local_straight_line
+0x4960		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4960		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4961		MOVX	XDATA	0x8013		MOVX_DPTR	0x8013	constant_00	local_straight_line
+0x4962		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4962		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4965		MOVX	XDATA	0x8001		MOVX_DPTR	0x8001	constant_00	local_straight_line
+0x4966		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x4995		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x4997		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
 0x4998	0x4820	XCH	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
 0x499A	0x4820	XCH	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
 0x499B	0x4820	MOV	IRAM	0x78		direct_byte			encoded
@@ -1124,6 +1181,138 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x4EAB	0x4CDA	LCALL	IRAM	?		stack_push_2			unresolved
 0x4EAB	0x4CDA	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0x4EAE	0x4CDA	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x4F24		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F24		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F29		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_C0	local_straight_line
+0x4F2A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F2A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F2E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F2E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F31		MOVX	XDATA	0x70B3		MOVX_DPTR	0x70B3		local_straight_line
+0x4F32		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F32		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F36		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F36		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F39		MOVX	XDATA	0x70B2		MOVX_DPTR	0x70B2		local_straight_line
+0x4F3A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F3A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F3E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F3E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F41		MOVX	XDATA	0x70B1		MOVX_DPTR	0x70B1		local_straight_line
+0x4F42		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F42		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F46		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F46		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F49		MOVX	XDATA	0x70B0		MOVX_DPTR	0x70B0		local_straight_line
+0x4F4A		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F4A		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F4D		MOVX	XDATA	0x70B1		MOVX_DPTR	0x70B1	constant_01	local_straight_line
+0x4F4E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F4E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F53		MOVX	XDATA	0x70B0		MOVX_DPTR	0x70B0	constant_FF	local_straight_line
+0x4F54		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F54		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F58		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_00	local_straight_line
+0x4F59		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x4F5B		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x4F5D		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x4F5F		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x4F61		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x4F63		LCALL	IRAM	?		stack_push_2			unresolved
+0x4F63		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x4F66		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F66		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F6B		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_80	local_straight_line
+0x4F6C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x4F6E		LCALL	IRAM	?		stack_push_2			unresolved
+0x4F6E		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x4F71		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F71		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F75		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F75		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F78		MOVX	XDATA	0x3018		MOVX_DPTR	0x3018		local_straight_line
+0x4F79		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F79		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F7D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F7D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F80		MOVX	XDATA	0x3017		MOVX_DPTR	0x3017		local_straight_line
+0x4F81		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F81		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F85		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F85		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F88		MOVX	XDATA	0x3016		MOVX_DPTR	0x3016		local_straight_line
+0x4F89		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F89		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F8D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F8D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F90		MOVX	XDATA	0x3015		MOVX_DPTR	0x3015		local_straight_line
+0x4F91		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F91		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F96		MOVX	XDATA	0x3E05		MOVX_DPTR	0x3E05	constant_40	local_straight_line
+0x4F97		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F97		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F9B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4F9B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4F9E		MOVX	XDATA	0x3E04		MOVX_DPTR	0x3E04		local_straight_line
+0x4FA0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FA0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FA3		MOVX	XDATA	0x3E08		MOVX_DPTR	0x3E08	constant_00	local_straight_line
+0x4FA4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FA4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FA8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FA8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FAB		MOVX	XDATA	0x3E03		MOVX_DPTR	0x3E03		local_straight_line
+0x4FAD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FAD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FB0		MOVX	XDATA	0x3E07		MOVX_DPTR	0x3E07	constant_00	local_straight_line
+0x4FB1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FB1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FB5		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x4FB6		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FB6		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FB8		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x4FB9		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FB9		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FBB		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x4FBC		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FBC		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FBE		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x4FBF		MOV	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0x4FC1		LCALL	IRAM	?		stack_push_2			unresolved
+0x4FC1		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x4FC4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FC4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FC8		MOVX	XDATA	0x3E02		MOVX_DPTR	0x3E02		local_straight_line
+0x4FCA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FCA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FCD		MOVX	XDATA	0x3E06		MOVX_DPTR	0x3E06	constant_00	local_straight_line
+0x4FCE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FCE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FD1		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FD1		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FD2		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FD2		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FD3		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FD3		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FD5		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FD5		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FD8		MOVX	XDATA	0x3DFE		MOVX_DPTR	0x3DFE		local_straight_line
+0x4FDA		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FDA		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FDB		MOVX	XDATA	0x3DFF		MOVX_DPTR	0x3DFF	constant_00	local_straight_line
+0x4FDC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FDC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FE0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FE0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FE3		MOVX	XDATA	0x3E01		MOVX_DPTR	0x3E01		local_straight_line
+0x4FE5		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x4FE5		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x4FE8		MOVX	XDATA	0x3E09		MOVX_DPTR	0x3E09	constant_00	local_straight_line
+0x4FE9		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x4FEB		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x4FED		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x4FEF		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x4FF1		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
 0x4FFC	0x4FFC	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0x4FFC	0x4FFC	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0x5001	0x4FFC	MOVX	XDATA	0x3400		MOVX_DPTR	0x3400	constant_09	local_straight_line
@@ -1359,6 +1548,9 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x51B3	0x5118	MOVX	XDATA	0x6313		MOVX_DPTR	0x6313	constant_27	local_straight_line
 0x51B4	0x5118	SETB	SFR	0xA8	7	bit			encoded
 0x51B6	0x5118	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x58A0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x58A0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x58A5		MOVX	XDATA	0x7086		MOVX_DPTR	0x7086	constant_14	local_straight_line
 0x58A7	0x58A6	MOV	IRAM	0x72		direct_byte			encoded
 0x58A9	0x58A6	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0x58A9	0x58A6	MOV	SFR	0x83		implicit_DPTR_high			8051_core
@@ -1409,6 +1601,9 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x5950	0x594A	MOV	IRAM	0x72		direct_byte			encoded
 0x5953	0x594A	RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x5965	0x5954	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5981		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5982		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5984		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
 0x5986	0x5986	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0x5986	0x5986	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0x598A	0x5986	MOVX	XDATA	0x3E2B		MOVX_DPTR	0x3E2B		local_straight_line
@@ -1451,6 +1646,229 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x59C8	0x5986	MOVX	XDATA	0x6313		MOVX_DPTR	0x6313	constant_27	local_straight_line
 0x59C9	0x5986	SETB	SFR	0xA8	7	bit			encoded
 0x59CB	0x5986	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x59F8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x59F8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A00		CLR	SFR	0xA8	7	bit			encoded
+0x5A03		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A03		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A0B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A0C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A0C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A10		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x5A11		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A11		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A13		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5A16		MOV	SFR	0x82		direct_byte			encoded
+0x5A1A		MOV	SFR	0x83		direct_byte			encoded
+0x5A1D		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5A1E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A1E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A22		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A26		MOV	SFR	0x82		direct_byte			encoded
+0x5A2A		MOV	SFR	0x83		direct_byte			encoded
+0x5A2D		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5A2E		MOV	SFR	0x82		direct_byte			encoded
+0x5A30		MOV	SFR	0x83		direct_byte			encoded
+0x5A32		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A32		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A33		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A33		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A38		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A38		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A3C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A3D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A3D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A41		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x5A42		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A42		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A44		MOV	SFR	0x82		direct_byte			encoded
+0x5A46		MOV	SFR	0x83		direct_byte			encoded
+0x5A49		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5A4A		XCH	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A4C		XCH	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A4D		MOV	IRAM	0x72		direct_byte			encoded
+0x5A4F		SETB	SFR	0xA8	7	bit			encoded
+0x5A51		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A51		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A55		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5A56		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A56		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A5A		MOV	SFR	0x82		direct_byte			encoded
+0x5A5E		MOV	SFR	0x83		direct_byte			encoded
+0x5A63		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A67		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A69		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5A6A		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A6C		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5A6D		SETB	SFR	0xA8	7	bit			encoded
+0x5A6F		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5A71		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5A8C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A8C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5A9B		CLR	SFR	0xA8	7	bit			encoded
+0x5A9E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5A9E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5AA2		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5AA6		MOV	SFR	0x82		direct_byte			encoded
+0x5AAA		MOV	SFR	0x83		direct_byte			encoded
+0x5AAD		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5AAE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AAE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5AB2		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5AB6		MOV	SFR	0x82		direct_byte			encoded
+0x5ABA		MOV	SFR	0x83		direct_byte			encoded
+0x5ABD		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5ABE		MOV	IRAM	0x72		direct_byte			encoded
+0x5AC0		SETB	SFR	0xA8	7	bit			encoded
+0x5AC2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5AC4		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5AC5		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AC5		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5ACC		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5ACE		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5ACF		CLR	SFR	0xA8	7	bit			encoded
+0x5AD2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AD2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5AD6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AD6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5ADA		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5ADE		MOV	SFR	0x82		direct_byte			encoded
+0x5AE2		MOV	SFR	0x83		direct_byte			encoded
+0x5AE5		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5AE6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AE6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5AEA		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5AEE		MOV	SFR	0x82		direct_byte			encoded
+0x5AF2		MOV	SFR	0x83		direct_byte			encoded
+0x5AF5		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5AF6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AF6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5AFB		MOVX	XDATA	0x6387		MOVX_DPTR	0x6387	constant_01	local_straight_line
+0x5AFC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5AFC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B00		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B01		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B01		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B09		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B09		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B0F		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B0F		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B13		SETB	SFR	0xA8	7	bit			encoded
+0x5B15		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B17		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B18		MOV	IRAM	0x72		direct_byte			encoded
+0x5B1D		MOV	SFR	0x82		direct_byte			encoded
+0x5B21		MOV	SFR	0x83		direct_byte			encoded
+0x5B26		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B2A		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B2C		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5B2D		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B2F		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5B30		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B32		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5B4D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B4D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B59		CLR	SFR	0xA8	7	bit			encoded
+0x5B5C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B5C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B60		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B64		MOV	SFR	0x82		direct_byte			encoded
+0x5B68		MOV	SFR	0x83		direct_byte			encoded
+0x5B6B		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5B6C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B6C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B70		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B74		MOV	SFR	0x82		direct_byte			encoded
+0x5B78		MOV	SFR	0x83		direct_byte			encoded
+0x5B7B		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5B7C		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B7E		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5B7F		MOV	IRAM	0x72		direct_byte			encoded
+0x5B81		SETB	SFR	0xA8	7	bit			encoded
+0x5B86		MOV	SFR	0x82		direct_byte			encoded
+0x5B8A		MOV	SFR	0x83		direct_byte			encoded
+0x5B8F		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B93		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B95		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5B96		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5B98		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5B99		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5B99		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5B9D		MOVX	XDATA	0x7094		MOVX_DPTR	0x7094	constant_00	local_straight_line
+0x5B9E		CLR	SFR	0xA8	7	bit			encoded
+0x5BA1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BA1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5BA5		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_01	local_straight_line
+0x5BA6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BA6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5BAD		SETB	SFR	0xA8	7	bit			encoded
+0x5BAF		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5BB1		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5BB2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5BB4		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5BE0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BE0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5BE7		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5BF0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BF0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5BF5		MOVX	XDATA	0x707A		MOVX_DPTR	0x707A	constant_1E	local_straight_line
+0x5BF6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BF6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5BFC		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5BFD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5BFD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C02		MOVX	XDATA	0x707A		MOVX_DPTR	0x707A	constant_0F	local_straight_line
+0x5C03		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C03		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C09		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C0C		MOV	IRAM	0x21	6	bit			encoded
+0x5C0E		CLR	SFR	0xA8	7	bit			encoded
+0x5C11		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C11		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C15		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C15		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C18		MOVX	XDATA	0x3C7E		MOVX_DPTR	0x3C7E		local_straight_line
+0x5C19		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C19		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C1D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C1D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C20		MOVX	XDATA	0x3C82		MOVX_DPTR	0x3C82		local_straight_line
+0x5C21		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C21		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C25		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C25		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C28		MOVX	XDATA	0x3C83		MOVX_DPTR	0x3C83		local_straight_line
+0x5C29		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C29		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C2D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C2D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C30		MOVX	XDATA	0x3C84		MOVX_DPTR	0x3C84		local_straight_line
+0x5C31		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5C33		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5C35		LCALL	IRAM	?		stack_push_2			unresolved
+0x5C35		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C38		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C38		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C3C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5C3D		LCALL	IRAM	?		stack_push_2			unresolved
+0x5C3D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C40		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C40		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C44		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5C45		LCALL	IRAM	?		stack_push_2			unresolved
+0x5C45		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C48		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C48		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C4C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5C4D		LCALL	IRAM	?		stack_push_2			unresolved
+0x5C4D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C50		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5C50		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5C54		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5C55		LCALL	IRAM	?		stack_push_2			unresolved
+0x5C55		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5C5A		MOV	SFR	0xA8	7	bit			encoded
+0x5C5C		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x5C5F	0x5C5D	MOV	IRAM	0x21	6	bit			encoded
 0x5C61	0x5C5D	CLR	SFR	0xA8	7	bit			encoded
 0x5C64	0x5C5D	MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
@@ -1531,6 +1949,387 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x5CE3	0x5C5D	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0x5CE8	0x5C5D	MOV	SFR	0xA8	7	bit			encoded
 0x5CEA	0x5C5D	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5CEB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5CEB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5CEF		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5CF0		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5CF0		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5CF2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5CF2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5CF5		MOVX	XDATA	0x3103		MOVX_DPTR	0x3103		local_straight_line
+0x5CF7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5CF7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5CFA		MOVX	XDATA	0x310B		MOVX_DPTR	0x310B		local_straight_line
+0x5CFB		MOV	IRAM	0x5F		direct_byte			encoded
+0x5CFE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5CFE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D03		MOVX	XDATA	0x3107		MOVX_DPTR	0x3107	constant_0F	local_straight_line
+0x5D04		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D04		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D09		MOVX	XDATA	0x3102		MOVX_DPTR	0x3102	constant_E4	local_straight_line
+0x5D0A		LCALL	IRAM	?		stack_push_2			unresolved
+0x5D0A		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D10		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D10		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D16		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D17		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D17		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D1B		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5D1C		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D1C		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D1E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D1E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D21		MOVX	XDATA	0x3103		MOVX_DPTR	0x3103		local_straight_line
+0x5D23		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D23		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D26		MOVX	XDATA	0x310B		MOVX_DPTR	0x310B		local_straight_line
+0x5D27		MOV	IRAM	0x5F		direct_byte			encoded
+0x5D2A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D2A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D2F		MOVX	XDATA	0x3107		MOVX_DPTR	0x3107	constant_0F	local_straight_line
+0x5D30		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D30		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D35		MOVX	XDATA	0x3102		MOVX_DPTR	0x3102	constant_E8	local_straight_line
+0x5D36		LCALL	IRAM	?		stack_push_2			unresolved
+0x5D36		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D3C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D3C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D42		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D43		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5D45		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5D46		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D46		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D4A		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5D4B		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D4B		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D4D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D4D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D50		MOVX	XDATA	0x3103		MOVX_DPTR	0x3103		local_straight_line
+0x5D52		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D52		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D55		MOVX	XDATA	0x310B		MOVX_DPTR	0x310B		local_straight_line
+0x5D56		MOV	IRAM	0x5F		direct_byte			encoded
+0x5D59		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D59		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D5D		MOVX	XDATA	0x3107		MOVX_DPTR	0x3107		local_straight_line
+0x5D5E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D5E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D63		MOVX	XDATA	0x3102		MOVX_DPTR	0x3102	constant_E4	local_straight_line
+0x5D64		LCALL	IRAM	?		stack_push_2			unresolved
+0x5D64		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D6A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D6A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D70		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D71		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5D73		XCH	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5D74		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D74		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D78		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5D79		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D79		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D7B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D7B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D7E		MOVX	XDATA	0x3103		MOVX_DPTR	0x3103		local_straight_line
+0x5D80		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D80		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D83		MOVX	XDATA	0x310B		MOVX_DPTR	0x310B		local_straight_line
+0x5D84		MOV	IRAM	0x5F		direct_byte			encoded
+0x5D87		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D87		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D8B		MOVX	XDATA	0x3107		MOVX_DPTR	0x3107		local_straight_line
+0x5D8C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D8C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D91		MOVX	XDATA	0x3102		MOVX_DPTR	0x3102	constant_E8	local_straight_line
+0x5D92		LCALL	IRAM	?		stack_push_2			unresolved
+0x5D92		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D98		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D98		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5D9E		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5D9F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5D9F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DA9		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5DAB		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DAD		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5DAF		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DAF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DB3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DB3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DB6		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5DB7		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DB7		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DB8		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_00	local_straight_line
+0x5DB9		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DB9		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DBC		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5DBE		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DC0		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DC0		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DC3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DC3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DC7		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DC8		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DC8		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DCB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DCB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DCF		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DD0		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DD0		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DD3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DD3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DD7		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DD8		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DD8		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DDB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DDB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DDF		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5DE0		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DE0		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5DE3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DE3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DEA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DEA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DF1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DF1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DF6		MOVX	XDATA	0x3C65		MOVX_DPTR	0x3C65	constant_01	local_straight_line
+0x5DF7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DF7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DFB		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5DFC		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5DFC		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5DFE		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_01	local_straight_line
+0x5DFF		LCALL	IRAM	?		stack_push_2			unresolved
+0x5DFF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E02		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E02		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E06		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E07		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E07		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E0A		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_02	local_straight_line
+0x5E0B		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E0B		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E0E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E0E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E12		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E12		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E15		MOVX	XDATA	0x4C15		MOVX_DPTR	0x4C15		local_straight_line
+0x5E1E		MOVX	XDATA	?		MOVX_DPTR		constant_0A	unresolved
+0x5E1F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E1F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E23		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E24		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E24		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E27		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_40	local_straight_line
+0x5E28		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E28		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E2B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E2B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E2F		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E30		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E30		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E33		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_80	local_straight_line
+0x5E34		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E34		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E37		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E37		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E3B		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E3C		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E3C		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E3F		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_21	local_straight_line
+0x5E40		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E40		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E45		MOVX	XDATA	0x3105		MOVX_DPTR	0x3105	constant_01	local_straight_line
+0x5E46		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E46		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E49		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E49		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E4D		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E4E		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E4E		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E51		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_81	local_straight_line
+0x5E53		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E53		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E56		MOVX	XDATA	0x3105		MOVX_DPTR	0x3105	constant_00	local_straight_line
+0x5E57		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E57		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E5B		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_01	local_straight_line
+0x5E5C		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E5C		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E5F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E5F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E63		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E64		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E64		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E67		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_60	local_straight_line
+0x5E69		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E69		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E6C		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_00	local_straight_line
+0x5E6D		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E6D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E70		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E70		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E74		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5E75		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E75		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E78		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_60	local_straight_line
+0x5E79		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E79		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E7E		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_09	local_straight_line
+0x5E7F		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E7F		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E82		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5E84		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5E86		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x5E88		LCALL	IRAM	?		stack_push_2			unresolved
+0x5E88		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5E8C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E8C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E8F		MOVX	XDATA	0x3CE0		MOVX_DPTR	0x3CE0	constant_00	local_straight_line
+0x5E90		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E90		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E93		MOVX	XDATA	0x3C02		MOVX_DPTR	0x3C02	constant_00	local_straight_line
+0x5E94		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E94		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E95		MOVX	XDATA	0x3C03		MOVX_DPTR	0x3C03	constant_00	local_straight_line
+0x5E96		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E96		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E99		MOVX	XDATA	0x3E2B		MOVX_DPTR	0x3E2B	constant_00	local_straight_line
+0x5E9A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E9A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5E9E		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5E9F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5E9F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EA3		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5EA8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EA8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EAC		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5EAD		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EAD		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EB0		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_02	local_straight_line
+0x5EB1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EB1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EB5		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_01	local_straight_line
+0x5EB6		LCALL	IRAM	?		stack_push_2			unresolved
+0x5EB6		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5EB9		LCALL	IRAM	?		stack_push_2			unresolved
+0x5EB9		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5EBD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EBD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EC0		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_00	local_straight_line
+0x5EC1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EC1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EC5		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5EC6		LCALL	IRAM	?		stack_push_2			unresolved
+0x5EC6		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5EC9		LCALL	IRAM	?		stack_push_2			unresolved
+0x5EC9		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5ECC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5ECC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5ED1		MOVX	XDATA	0x3E2B		MOVX_DPTR	0x3E2B		local_straight_line
+0x5ED5		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5ED5		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5ED8		MOVX	XDATA	0x3E2B		MOVX_DPTR	0x3E2B	constant_00	local_straight_line
+0x5ED9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5ED9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EDD		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5EDE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EDE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EE2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5EEB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EEB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EEE		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5EEF		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EEF		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EF0		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_00	local_straight_line
+0x5EF1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EF1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EF4		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_00	local_straight_line
+0x5EF5		LCALL	IRAM	?		stack_push_2			unresolved
+0x5EF5		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5EF8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EF8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EFC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5EFC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5EFF		MOVX	XDATA	0x3E2C		MOVX_DPTR	0x3E2C		local_straight_line
+0x5F00		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5F02		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F04		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F04		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F07		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F07		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F0B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F0C		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F0C		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F0F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F0F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F13		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F14		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F14		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F17		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F17		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F1B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F2A		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F2A		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F2D		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5F2F		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F31		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F31		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F34		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F34		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F38		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F39		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F39		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F3C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F3C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F40		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F41		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F41		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F47		MOV	SFR	0x82		direct_byte			encoded
+0x5F4C		MOV	SFR	0x83		direct_byte			encoded
+0x5F4F		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x5F50		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F50		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F55		MOVX	XDATA	0x3CE0		MOVX_DPTR	0x3CE0		local_straight_line
+0x5F56		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F56		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F5B		MOVX	XDATA	0x3100		MOVX_DPTR	0x3100	constant_FF	local_straight_line
+0x5F5C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F5C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F5F		MOVX	XDATA	0x3105		MOVX_DPTR	0x3105	constant_FF	local_straight_line
+0x5F60		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F60		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F63		MOVX	XDATA	0x3104		MOVX_DPTR	0x3104	constant_FF	local_straight_line
+0x5F64		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F64		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F67		MOVX	XDATA	0x3106		MOVX_DPTR	0x3106	constant_FF	local_straight_line
+0x5F68		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F68		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F6C		MOVX	XDATA	0x3C62		MOVX_DPTR	0x3C62	constant_00	local_straight_line
+0x5F6D		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F6D		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F6F		MOVX	XDATA	0x3C63		MOVX_DPTR	0x3C63	constant_01	local_straight_line
+0x5F70		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F70		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F73		LCALL	IRAM	?		stack_push_2			unresolved
+0x5F73		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F76		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F76		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F7B		MOVX	XDATA	0x3E2B		MOVX_DPTR	0x3E2B		local_straight_line
+0x5F7F		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x5F81		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F81		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F84		MOVX	XDATA	0x3C2A		MOVX_DPTR	0x3C2A	constant_00	local_straight_line
+0x5F85		MOV	IRAM	0x5F		direct_byte			encoded
+0x5F87		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x5F89		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x5F8E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F8E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5F94		MOV	SFR	0x82		direct_byte			encoded
+0x5F99		MOV	SFR	0x83		direct_byte			encoded
+0x5F9C		MOV	IRAM	0x5F		direct_byte			encoded
+0x5F9E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x5F9E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x5FA3		MOVX	XDATA	0x3C2A		MOVX_DPTR	0x3C2A		local_straight_line
+0x5FA4		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x5FAC	0x5FA5	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0x5FAC	0x5FA5	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0x5FB5	0x5FA5	MOV	SFR	0x82		implicit_DPTR_low			8051_core
@@ -1547,6 +2346,471 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x5FD6	0x5FA5	MOV	SFR	0xF0		direct_byte			encoded
 0x5FDA	0x5FA5	XCH	SFR	0x83		direct_byte			encoded
 0x5FDE	0x5FA5	XCH	SFR	0x83		direct_byte			encoded
+0x608C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x608E		LCALL	IRAM	?		stack_push_2			unresolved
+0x608E		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6091		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6091		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6095		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075	constant_00	local_straight_line
+0x6096		MOV	IRAM	0x72		direct_byte			encoded
+0x6099		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x609A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x609A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60A6		MOV	IRAM	0x72		direct_byte			encoded
+0x60A9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60A9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60AE		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_80	local_straight_line
+0x60B0		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_00	local_straight_line
+0x60B1		CLR	SFR	0xA8	7	bit			encoded
+0x60B4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60B4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60B9		MOVX	XDATA	0x6387		MOVX_DPTR	0x6387	constant_80	local_straight_line
+0x60BA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60BA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60BF		MOVX	XDATA	0x7070		MOVX_DPTR	0x7070	constant_0C	local_straight_line
+0x60C2		MOVX	XDATA	0x7070		MOVX_DPTR	0x7070	constant_04	local_straight_line
+0x60C3		LCALL	IRAM	?		stack_push_2			unresolved
+0x60C3		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x60C6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60C6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60CB		MOVX	XDATA	0x7070		MOVX_DPTR	0x7070	constant_0E	local_straight_line
+0x60CE		MOVX	XDATA	0x7070		MOVX_DPTR	0x7070	constant_04	local_straight_line
+0x60CF		LCALL	IRAM	?		stack_push_2			unresolved
+0x60CF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x60D2		SETB	SFR	0xA8	7	bit			encoded
+0x60D4		LCALL	IRAM	?		stack_push_2			unresolved
+0x60D4		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x60D7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60D7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60DB		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075	constant_00	local_straight_line
+0x60DC		MOV	IRAM	0x72		direct_byte			encoded
+0x60DF		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x60E0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60E0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60EC		CLR	SFR	0xA8	7	bit			encoded
+0x60EF		LCALL	IRAM	?		stack_push_2			unresolved
+0x60EF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x60F2		SETB	SFR	0xA8	7	bit			encoded
+0x60F4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60F4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x60F8		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075	constant_00	local_straight_line
+0x60F9		MOV	IRAM	0x72		direct_byte			encoded
+0x60FC		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x60FD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x60FD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6109		CLR	SFR	0xA8	7	bit			encoded
+0x610C		LCALL	IRAM	?		stack_push_2			unresolved
+0x610C		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x610F		SETB	SFR	0xA8	7	bit			encoded
+0x6111		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6111		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6115		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075	constant_00	local_straight_line
+0x6116		MOV	IRAM	0x72		direct_byte			encoded
+0x6119		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x611A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x611A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6126		CLR	SFR	0xA8	7	bit			encoded
+0x6129		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6129		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x612E		MOVX	XDATA	0x632C		MOVX_DPTR	0x632C	constant_0C	local_straight_line
+0x612F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x612F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6133		MOVX	XDATA	0x632F		MOVX_DPTR	0x632F	constant_00	local_straight_line
+0x6134		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6134		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6137		MOVX	XDATA	0x632C		MOVX_DPTR	0x632C	constant_00	local_straight_line
+0x6138		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6138		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x613B		MOVX	XDATA	0x632F		MOVX_DPTR	0x632F	constant_00	local_straight_line
+0x613C		LCALL	IRAM	?		stack_push_2			unresolved
+0x613C		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x613F		SETB	SFR	0xA8	7	bit			encoded
+0x6141		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6141		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6146		MOVX	XDATA	0x3C73		MOVX_DPTR	0x3C73		local_straight_line
+0x6147		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6147		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x614B		MOVX	XDATA	0x7075		MOVX_DPTR	0x7075	constant_00	local_straight_line
+0x614C		MOV	IRAM	0x72		direct_byte			encoded
+0x614F		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x6150		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6150		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6159		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x615B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x615D		LCALL	IRAM	?		stack_push_2			unresolved
+0x615D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6160		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6160		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6164		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6165		LCALL	IRAM	?		stack_push_2			unresolved
+0x6165		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x616B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x616B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6193		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6193		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x619E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x619E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61A1		MOVX	XDATA	0x4C08		MOVX_DPTR	0x4C08		local_straight_line
+0x61A2		LCALL	IRAM	?		stack_push_2			unresolved
+0x61A2		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x61A5		LCALL	IRAM	?		stack_push_2			unresolved
+0x61A5		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x61A9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61A9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61AC		MOVX	XDATA	0x3C1A		MOVX_DPTR	0x3C1A	constant_00	local_straight_line
+0x61AD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61AD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61B0		MOVX	XDATA	0x3C65		MOVX_DPTR	0x3C65	constant_00	local_straight_line
+0x61B1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61B1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61BC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61BC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61C7		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x61C7		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x61CE		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x61CE		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x61D5		LCALL	IRAM	?		stack_push_2			unresolved
+0x61D5		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x61D8		LCALL	IRAM	?		stack_push_2			unresolved
+0x61D8		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x61DB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61DB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61E3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61E3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61EB		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x61EB		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x61F1		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x61F1		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x61F7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61F7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x61FC		MOVX	XDATA	0x3C1A		MOVX_DPTR	0x3C1A	constant_01	local_straight_line
+0x61FD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x61FD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6202		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01	constant_2D	local_straight_line
+0x6203		LCALL	IRAM	?		stack_push_2			unresolved
+0x6203		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6206		LCALL	IRAM	?		stack_push_2			unresolved
+0x6206		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6209		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6209		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x620F		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6211		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6213		LCALL	IRAM	?		stack_push_2			unresolved
+0x6213		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6219		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x621B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x621D		LCALL	IRAM	?		stack_push_2			unresolved
+0x621D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6220		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6220		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6224		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6225		LCALL	IRAM	?		stack_push_2			unresolved
+0x6225		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6228		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x622A		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x622C		LCALL	IRAM	?		stack_push_2			unresolved
+0x622C		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6230		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6230		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6233		MOVX	XDATA	0x3E29		MOVX_DPTR	0x3E29	constant_00	local_straight_line
+0x6234		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6234		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6238		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6239		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6239		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x623D		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6245		MOV	SFR	0x82		direct_byte			encoded
+0x624A		MOV	SFR	0x83		direct_byte			encoded
+0x624D		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x624E		LCALL	IRAM	?		stack_push_2			unresolved
+0x624E		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6251		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6251		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6256		MOVX	XDATA	0x3E29		MOVX_DPTR	0x3E29		local_straight_line
+0x6259		MOV	IRAM	0x44		direct_byte			encoded
+0x625C		CLR	IRAM	0x21	2	bit			encoded
+0x625E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x625E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6263		MOVX	XDATA	0x4C14		MOVX_DPTR	0x4C14	constant_01	local_straight_line
+0x6264		MOV	IRAM	0x72		direct_byte			encoded
+0x6267		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6269		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x626E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x626E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6275		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6275		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x627C		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x627C		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x6281		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6281		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x628A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x628A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6292		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6292		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x629A		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x629A		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x62A0		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x62A0		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x62A6		LCALL	IRAM	?		stack_push_2			unresolved
+0x62A6		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x62A9		LCALL	IRAM	?		stack_push_2			unresolved
+0x62A9		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x62AC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62AC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x62B3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62B3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x62BA		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x62BA		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x62BF		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x62BF		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x62C8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62C8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x62CE		MOV	IRAM	0x44		direct_byte			encoded
+0x62D1		SETB	IRAM	0x21	2	bit			encoded
+0x62D3		MOV	IRAM	0x6C		direct_byte			encoded
+0x62D6		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x62D8		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x62DA		LCALL	IRAM	?		stack_push_2			unresolved
+0x62DA		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x62DE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62DE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x62E1		MOVX	XDATA	0x32A7		MOVX_DPTR	0x32A7	constant_00	local_straight_line
+0x62E2		MOV	IRAM	0x44		direct_byte			encoded
+0x62E4		MOV	IRAM	0x72		direct_byte			encoded
+0x62E6		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x62E7		MOV	IRAM	0x44		direct_byte			encoded
+0x62EA		SETB	IRAM	0x21	2	bit			encoded
+0x62EC		MOV	IRAM	0x6C		direct_byte			encoded
+0x62EF		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x62F1		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x62F3		LCALL	IRAM	?		stack_push_2			unresolved
+0x62F3		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x62F6		MOV	IRAM	0x72		direct_byte			encoded
+0x62FA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62FA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x62FD		MOVX	XDATA	0x3298		MOVX_DPTR	0x3298	constant_00	local_straight_line
+0x62FE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x62FE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6301		MOVX	XDATA	0x3217		MOVX_DPTR	0x3217	constant_00	local_straight_line
+0x6302		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6302		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6305		MOVX	XDATA	0x3215		MOVX_DPTR	0x3215	constant_00	local_straight_line
+0x6306		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6306		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x6307		MOVX	XDATA	0x3216		MOVX_DPTR	0x3216	constant_00	local_straight_line
+0x6308		MOV	IRAM	0x77		direct_byte			encoded
+0x630A		MOV	IRAM	0x76		direct_byte			encoded
+0x630C		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x630E		MOV	IRAM	0x44		direct_byte			encoded
+0x669F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x669F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x66A9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x66A9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x66AF		LCALL	IRAM	?		stack_push_2			unresolved
+0x66AF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66B4		LCALL	IRAM	?		stack_push_2			unresolved
+0x66B4		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66B7		LCALL	IRAM	?		stack_push_2			unresolved
+0x66B7		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66BA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x66BA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x66C3		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x66C5		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x66C7		LCALL	IRAM	?		stack_push_2			unresolved
+0x66C7		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66CA		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x66CC		LCALL	IRAM	?		stack_push_2			unresolved
+0x66CC		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66CF		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x66D1		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x66D3		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x66D5		LCALL	IRAM	?		stack_push_2			unresolved
+0x66D5		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66D8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x66D8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x66DD		LCALL	IRAM	?		stack_push_2			unresolved
+0x66DD		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x66E0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x66E0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x66E5		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01	constant_0A	local_straight_line
+0x66E6		MOV	IRAM	0x72		direct_byte			encoded
+0x66E9		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x671A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x671A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6724		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6724		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x672D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x672D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6733		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6733		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6737		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6738		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6738		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6740		LCALL	IRAM	?		stack_push_2			unresolved
+0x6740		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6743		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6743		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6747		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6748		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6748		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x674A		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6750		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6752		MOV	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0x6754		INC	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0x6759		XCH	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x675B		XCH	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x675C		DJNZ	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0x675E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x675E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6761		MOVX	XDATA	0x3E2A		MOVX_DPTR	0x3E2A		local_straight_line
+0x6763		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6763		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6766		MOVX	XDATA	0x3E29		MOVX_DPTR	0x3E29		local_straight_line
+0x6768		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6769		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6769		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x676B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x676E		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6771		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x677A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x677A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x677E		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x677F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x677F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x678A		LCALL	IRAM	?		stack_push_2			unresolved
+0x678A		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x678F		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6791		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6793		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6795		LCALL	IRAM	?		stack_push_2			unresolved
+0x6795		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6798		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6798		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x679D		LCALL	IRAM	?		stack_push_2			unresolved
+0x679D		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x67A0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x67A0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x67A5		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01	constant_0A	local_straight_line
+0x67A6		MOV	IRAM	0x72		direct_byte			encoded
+0x67A9		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x67DC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x67DC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x67E3		MOV	IRAM	0x72		direct_byte			encoded
+0x67E6		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x67E7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x67E7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x67ED		LCALL	IRAM	?		stack_push_2			unresolved
+0x67ED		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x67F2		LCALL	IRAM	?		stack_push_2			unresolved
+0x67F2		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x67F5		LCALL	IRAM	?		stack_push_2			unresolved
+0x67F5		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x67F8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x67F8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x67FE		MOV	IRAM	0x72		direct_byte			encoded
+0x6801		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x6802		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6804		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6806		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6808		LCALL	IRAM	?		stack_push_2			unresolved
+0x6808		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x680B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x680B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x680F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x680F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6816		MOVX	XDATA	?		MOVX_DPTR		constant_E0	unresolved
+0x681B		MOVX	XDATA	?		MOVX_DPTR		constant_E1	unresolved
+0x681C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x681C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6821		LCALL	IRAM	?		stack_push_2			unresolved
+0x6821		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6824		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6824		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x682A		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x682C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6830		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6832		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6834		LCALL	IRAM	?		stack_push_2			unresolved
+0x6834		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6837		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6839		LCALL	IRAM	?		stack_push_2			unresolved
+0x6839		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x683C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x683C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6841		MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01	constant_0A	local_straight_line
+0x6842		MOV	IRAM	0x72		direct_byte			encoded
+0x6845		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x686C		MOV	IRAM	0x72		direct_byte			encoded
+0x686F		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x6873		MOV	IRAM	0x73		direct_byte			encoded
+0x6877		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6878		LCALL	IRAM	?		stack_push_2			unresolved
+0x6878		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x687B		LCALL	IRAM	?		stack_push_2			unresolved
+0x687B		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x687E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x687E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6883		MOVX	XDATA	0x3C00		MOVX_DPTR	0x3C00	constant_01	local_straight_line
+0x6884		LCALL	IRAM	?		stack_push_2			unresolved
+0x6884		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6887		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6889		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x688B		LCALL	IRAM	?		stack_push_2			unresolved
+0x688B		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x688F		MOV	IRAM	0x69		direct_byte			encoded
+0x6891		MOV	IRAM	0x6A		direct_byte			encoded
+0x6893		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6893		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6897		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6897		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x689F		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x68A5		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x68A6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x68A6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x68AC		MOVX	XDATA	0x7059		MOVX_DPTR	0x7059	read_modify_write_or_01	local_straight_line
+0x68AD		LCALL	IRAM	?		stack_push_2			unresolved
+0x68AD		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x68B2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x68B2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x68B9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x68B9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x68BF		LCALL	IRAM	?		stack_push_2			unresolved
+0x68BF		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x68C2		LCALL	IRAM	?		stack_push_2			unresolved
+0x68C2		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x68C9		DEC	IRAM	0x74		direct_byte			encoded
+0x68CF		MOV	SFR	0x82		direct_byte			encoded
+0x68D4		MOV	SFR	0x83		direct_byte			encoded
+0x68D7		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x68DA		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x68DC		MOV	IRAM	0x72		direct_byte			encoded
+0x68DE		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x69B0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x69B0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x69B7		LCALL	IRAM	?		stack_push_2			unresolved
+0x69B7		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x69BB		MOV	IRAM	0x73		direct_byte			encoded
+0x69C1		DEC	IRAM	0x74		direct_byte			encoded
+0x69C7		MOV	SFR	0x82		direct_byte			encoded
+0x69CC		MOV	SFR	0x83		direct_byte			encoded
+0x69CF		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x69D2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x69D4		MOV	IRAM	0x72		direct_byte			encoded
+0x69D6		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x6D62		MOV	IRAM	0x73		direct_byte			encoded
+0x6D64		MOV	IRAM	0x6C		direct_byte			encoded
+0x6D67		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6D67		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6D6B		MOVX	XDATA	0x3C55		MOVX_DPTR	0x3C55	constant_01	local_straight_line
+0x6D6C		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6D6E		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6D70		LCALL	IRAM	?		stack_push_2			unresolved
+0x6D70		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6D73		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6D73		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6D78		MOVX	XDATA	0x7035		MOVX_DPTR	0x7035	constant_01	local_straight_line
+0x6EED		MOV	IRAM	0x72		direct_byte			encoded
+0x6EEF		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x6EF0	0x5FA5	MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
 0x6EF2	0x5FA5	MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
 0x6EF4	0x5FA5	LCALL	IRAM	?		stack_push_2			unresolved
@@ -1555,6 +2819,242 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x6EF9	0x5FA5	LCALL	IRAM	?		stack_push_2			unresolved
 0x6EF9	0x5FA5	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0x6EFC	0x5FA5	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x6F70		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6F72		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6F74		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6F76		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6F78		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x6F7A		LCALL	IRAM	?		stack_push_2			unresolved
+0x6F7A		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6F7E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6F7E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6F81		MOVX	XDATA	0x3187		MOVX_DPTR	0x3187	constant_00	local_straight_line
+0x6F82		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6F82		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x6F86		MOVX	XDATA	0x3188		MOVX_DPTR	0x3188	read_modify_write_and_F8	local_straight_line
+0x6F87		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6F87		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6F8C		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_C0	local_straight_line
+0x6F8D		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6F8F		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6F91		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x6F93		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6F95		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6F97		LCALL	IRAM	?		stack_push_2			unresolved
+0x6F97		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6F9A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6F9A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6F9E		MOVX	XDATA	0x70B8		MOVX_DPTR	0x70B8	constant_00	local_straight_line
+0x6F9F		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x6F9F		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FA0		MOVX	XDATA	0x70B9		MOVX_DPTR	0x70B9	constant_00	local_straight_line
+0x6FA1		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FA1		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FA5		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_01	local_straight_line
+0x6FA6		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6FA8		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6FAA		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x6FAC		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6FAE		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6FB3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FB3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FB8		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_C0	local_straight_line
+0x6FB9		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6FBB		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6FBD		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x6FBF		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6FC1		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6FC3		LCALL	IRAM	?		stack_push_2			unresolved
+0x6FC3		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6FC6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FC6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FCA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FCA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FCD		MOVX	XDATA	0x70BB		MOVX_DPTR	0x70BB		local_straight_line
+0x6FCE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FCE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FD2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FD2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FD5		MOVX	XDATA	0x70BA		MOVX_DPTR	0x70BA		local_straight_line
+0x6FD6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FD6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FDA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FDA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FDD		MOVX	XDATA	0x70B9		MOVX_DPTR	0x70B9		local_straight_line
+0x6FDE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FDE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FE2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FE2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FE5		MOVX	XDATA	0x70B8		MOVX_DPTR	0x70B8		local_straight_line
+0x6FE6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x6FE6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x6FEB		MOVX	XDATA	0x70B6		MOVX_DPTR	0x70B6	constant_01	local_straight_line
+0x6FEC		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6FEE		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x6FF0		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x6FF2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6FF4		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6FF6		LCALL	IRAM	?		stack_push_2			unresolved
+0x6FF6		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x6FF9		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x6FFB		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x6FFD		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x6FFF		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7001		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x7146		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7146		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7149		MOV	SFR	0xF0		direct_byte			encoded
+0x714D		XCH	SFR	0x83		direct_byte			encoded
+0x7151		XCH	SFR	0x83		direct_byte			encoded
+0x71AA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x71AA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x71AE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x71AE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x71B6		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x71B7		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x71B9		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x71BB		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x71BD		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x71C5		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x71C6		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x71C8		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x71CA		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x71CC		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x720C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x720C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7210		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7210		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7218		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7219		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x721B		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x721D		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x721F		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7227		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7228		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x722A		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x722C		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x722E		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7272		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7272		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x727A		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x727B		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x727D		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x727F		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7281		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7289		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x728A		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x728C		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x728E		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7290		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x72D0		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x72D0		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x72D4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x72D4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x72DC		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x72DD		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x72DF		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x72E1		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x72E3		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x72EB		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x72EC		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x72EE		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x72F0		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x72F2		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7332		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7332		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7336		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7336		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x733E		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x733F		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7341		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7343		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7345		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x734D		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x734E		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7350		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7352		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7354		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7394		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7394		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7398		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7398		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x73A0		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x73A1		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x73A3		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x73A5		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x73A7		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x73AF		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x73B0		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x73B2		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x73B4		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x73B6		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x73F6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x73F6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x73FA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x73FA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7402		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7403		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7405		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7407		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7409		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7411		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7412		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7414		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7416		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x7418		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7458		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7458		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x745C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x745C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7464		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7465		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7467		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7469		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x746B		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x7473		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7474		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7476		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7478		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x747A		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x74BA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x74BA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x74BE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x74BE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x74C6		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x74C7		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x74C9		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x74CB		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x74CD		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x74D4		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x74D5		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x74D7		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x74D9		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x74DB		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x752C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x752C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7535		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7536		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7538		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x753A		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x753C		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x753E		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x7544		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0x7545		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x7547		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7549		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x754B		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x754D		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x754F		LCALL	IRAM	?		stack_push_2			unresolved
+0x754F		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x7552		CLR	IRAM	0x27	1	bit			encoded
+0x7555		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7555		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x7558		MOVX	XDATA	0x31A1		MOVX_DPTR	0x31A1	constant_00	local_straight_line
+0x7559		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x7559		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x755F		MOVX	XDATA	0x7035		MOVX_DPTR	0x7035	read_modify_write_and_11	local_straight_line
+0x7560		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x7562		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x7563	0x7563	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0x7563	0x7563	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0x7568	0x7563	MOVX	XDATA	0x3C01		MOVX_DPTR	0x3C01	constant_2D	local_straight_line
@@ -4501,6 +6001,306 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0x9344	0x91D2	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0x9347	0x91D2	MOV	IRAM	0x4D		direct_byte			encoded
 0x934A	0x91D2	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x93C7		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x93C7		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x93CB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x93CB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x93CE		MOVX	XDATA	0x7030		MOVX_DPTR	0x7030		local_straight_line
+0x93CF		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0x93D1		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0x93D3		MOV	IRAM	?		register_R3	0x03,0x0B,0x13,0x1B		bank_unresolved
+0x93D5		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x93D7		MOV	IRAM	?		register_R6	0x06,0x0E,0x16,0x1E		bank_unresolved
+0x93D9		LCALL	IRAM	?		stack_push_2			unresolved
+0x93D9		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0x93DC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x93DC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x93E1		MOVX	XDATA	0x502B		MOVX_DPTR	0x502B	constant_80	local_straight_line
+0x93E2		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x93F9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x93F9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x93FD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x93FD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9400		MOVX	XDATA	0x5074		MOVX_DPTR	0x5074		local_straight_line
+0x9401		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9401		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9405		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9405		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9408		MOVX	XDATA	0x5075		MOVX_DPTR	0x5075		local_straight_line
+0x9409		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9409		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x940D		MOVX	XDATA	0x3026		MOVX_DPTR	0x3026	constant_00	local_straight_line
+0x940E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x940E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9413		MOVX	XDATA	0x3020		MOVX_DPTR	0x3020	constant_03	local_straight_line
+0x9414		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9414		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9416		MOVX	XDATA	0x3021		MOVX_DPTR	0x3021	constant_00	local_straight_line
+0x9417		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9417		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x941C		MOVX	XDATA	0x7020		MOVX_DPTR	0x7020	constant_30	local_straight_line
+0x941F		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x941F		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9420		MOVX	XDATA	0x7021		MOVX_DPTR	0x7021	constant_30	local_straight_line
+0x9421		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9421		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9426		MOVX	XDATA	0x7024		MOVX_DPTR	0x7024	constant_10	local_straight_line
+0x9427		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9427		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9429		MOVX	XDATA	0x7025		MOVX_DPTR	0x7025	constant_00	local_straight_line
+0x942A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x942A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x942D		MOVX	XDATA	0x7022		MOVX_DPTR	0x7022	constant_00	local_straight_line
+0x942E		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x942E		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9431		MOVX	XDATA	0x7023		MOVX_DPTR	0x7023	constant_54	local_straight_line
+0x9432		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9432		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9437		MOVX	XDATA	0x5061		MOVX_DPTR	0x5061	constant_10	local_straight_line
+0x9438		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9438		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x943A		MOVX	XDATA	0x5062		MOVX_DPTR	0x5062	constant_00	local_straight_line
+0x943B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x943B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9440		MOVX	XDATA	0x5051		MOVX_DPTR	0x5051	constant_17	local_straight_line
+0x9441		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9441		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9448		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9448		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x944D		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_01	local_straight_line
+0x944E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x944E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9456		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x94A3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94A3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94A7		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x94A8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94A8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94AD		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A	constant_60	local_straight_line
+0x94B0		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A	constant_20	local_straight_line
+0x94B4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94B4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94B9		MOVX	XDATA	0x6900		MOVX_DPTR	0x6900	constant_27	local_straight_line
+0x94BA		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x94BA		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x94BD		MOVX	XDATA	0x6901		MOVX_DPTR	0x6901	constant_80	local_straight_line
+0x94BE		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x94BE		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x94C1		MOVX	XDATA	0x6902		MOVX_DPTR	0x6902		local_straight_line
+0x94C2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94C2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94C6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94C6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94C9		MOVX	XDATA	0x6903		MOVX_DPTR	0x6903		local_straight_line
+0x94CA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94CA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94CE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94CE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94D1		MOVX	XDATA	0x6904		MOVX_DPTR	0x6904		local_straight_line
+0x94D2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94D2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94D6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94D6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94D9		MOVX	XDATA	0x6905		MOVX_DPTR	0x6905		local_straight_line
+0x94DA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94DA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94DE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94DE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94E1		MOVX	XDATA	0x6906		MOVX_DPTR	0x6906		local_straight_line
+0x94E2		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x94E2		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x94E5		MOVX	XDATA	0x6907		MOVX_DPTR	0x6907	constant_40	local_straight_line
+0x94E6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94E6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94EA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94EA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94ED		MOVX	XDATA	0x6908		MOVX_DPTR	0x6908		local_straight_line
+0x94EE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94EE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94F2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94F2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94F5		MOVX	XDATA	0x6909		MOVX_DPTR	0x6909		local_straight_line
+0x94F6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94F6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94FA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94FA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x94FD		MOVX	XDATA	0x690A		MOVX_DPTR	0x690A		local_straight_line
+0x94FE		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x94FE		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9502		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9502		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9505		MOVX	XDATA	0x690B		MOVX_DPTR	0x690B		local_straight_line
+0x9506		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9506		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x950A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x950A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x950D		MOVX	XDATA	0x690C		MOVX_DPTR	0x690C		local_straight_line
+0x950E		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x950E		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9510		MOVX	XDATA	0x690D		MOVX_DPTR	0x690D	constant_00	local_straight_line
+0x9511		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9511		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9512		MOVX	XDATA	0x690E		MOVX_DPTR	0x690E	constant_00	local_straight_line
+0x9513		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9513		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9514		MOVX	XDATA	0x690F		MOVX_DPTR	0x690F	constant_00	local_straight_line
+0x9515		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9515		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9516		MOVX	XDATA	0x6910		MOVX_DPTR	0x6910	constant_00	local_straight_line
+0x9517		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9517		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9518		MOVX	XDATA	0x6911		MOVX_DPTR	0x6911	constant_00	local_straight_line
+0x9519		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9519		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x951A		MOVX	XDATA	0x6912		MOVX_DPTR	0x6912	constant_00	local_straight_line
+0x951B		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x951B		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x951C		MOVX	XDATA	0x6913		MOVX_DPTR	0x6913	constant_00	local_straight_line
+0x951F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x951F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9524		MOVX	XDATA	0x7043		MOVX_DPTR	0x7043	constant_01	local_straight_line
+0x9525		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9525		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x952B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x952B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9530		MOVX	XDATA	0x5002		MOVX_DPTR	0x5002	constant_11	local_straight_line
+0x9531		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x9573		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9573		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9577		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9577		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x957A		MOVX	XDATA	0x5074		MOVX_DPTR	0x5074		local_straight_line
+0x957B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x957B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x957F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x957F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9582		MOVX	XDATA	0x5075		MOVX_DPTR	0x5075		local_straight_line
+0x9583		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9583		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9588		MOVX	XDATA	0x3020		MOVX_DPTR	0x3020	constant_03	local_straight_line
+0x9589		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9589		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x958B		MOVX	XDATA	0x3021		MOVX_DPTR	0x3021	constant_00	local_straight_line
+0x958C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x958C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9591		MOVX	XDATA	0x3026		MOVX_DPTR	0x3026	constant_02	local_straight_line
+0x9592		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9592		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9596		MOVX	XDATA	0x302E		MOVX_DPTR	0x302E	constant_00	local_straight_line
+0x9597		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9597		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x959A		MOVX	XDATA	0x302F		MOVX_DPTR	0x302F	constant_12	local_straight_line
+0x959B		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x959B		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x959E		MOVX	XDATA	0x3030		MOVX_DPTR	0x3030	constant_70	local_straight_line
+0x959F		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x959F		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95A1		MOVX	XDATA	0x3031		MOVX_DPTR	0x3031	constant_00	local_straight_line
+0x95A6		MOV	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0x95A8		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0x95A9		MOV	SFR	0xF0		direct_byte			encoded
+0x95AF		MOV	SFR	0x82		direct_byte			encoded
+0x95B5		MOV	SFR	0x83		direct_byte			encoded
+0x95B9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x95B9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x95BC		MOVX	XDATA	0x3032		MOVX_DPTR	0x3032		local_straight_line
+0x95BD		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95BD		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95BF		MOVX	XDATA	0x3033		MOVX_DPTR	0x3033	constant_00	local_straight_line
+0x95C0		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95C0		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95C1		MOVX	XDATA	0x3034		MOVX_DPTR	0x3034	constant_00	local_straight_line
+0x95C2		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95C2		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95C3		MOVX	XDATA	0x3035		MOVX_DPTR	0x3035	constant_00	local_straight_line
+0x95C4		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95C4		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95C5		MOVX	XDATA	0x3036		MOVX_DPTR	0x3036	constant_00	local_straight_line
+0x95C6		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95C6		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95C9		MOVX	XDATA	0x3037		MOVX_DPTR	0x3037	constant_0A	local_straight_line
+0x95CA		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95CA		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95CC		MOVX	XDATA	0x3038		MOVX_DPTR	0x3038	constant_00	local_straight_line
+0x95CD		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95CD		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95CE		MOVX	XDATA	0x3039		MOVX_DPTR	0x3039	constant_00	local_straight_line
+0x95CF		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95CF		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95D0		MOVX	XDATA	0x303A		MOVX_DPTR	0x303A	constant_00	local_straight_line
+0x95D1		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95D1		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95D2		MOVX	XDATA	0x303B		MOVX_DPTR	0x303B	constant_00	local_straight_line
+0x95D3		MOV	SFR	0xF0		direct_byte			encoded
+0x95DA		MOV	SFR	0x82		direct_byte			encoded
+0x95E0		MOV	SFR	0x83		direct_byte			encoded
+0x95E4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x95E4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x95E7		MOVX	XDATA	0x303C		MOVX_DPTR	0x303C		local_straight_line
+0x95E9		MOV	SFR	0xF0		direct_byte			encoded
+0x95EF		MOV	SFR	0x82		direct_byte			encoded
+0x95F5		MOV	SFR	0x83		direct_byte			encoded
+0x95F9		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x95F9		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x95FC		MOVX	XDATA	0x303D		MOVX_DPTR	0x303D		local_straight_line
+0x95FD		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x95FD		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x95FF		MOVX	XDATA	0x303E		MOVX_DPTR	0x303E	constant_00	local_straight_line
+0x9600		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9600		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9601		MOVX	XDATA	0x303F		MOVX_DPTR	0x303F	constant_00	local_straight_line
+0x9602		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9602		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9603		MOVX	XDATA	0x3040		MOVX_DPTR	0x3040	constant_00	local_straight_line
+0x9604		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9604		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9605		MOVX	XDATA	0x3041		MOVX_DPTR	0x3041	constant_00	local_straight_line
+0x9606		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9606		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9607		MOVX	XDATA	0x3042		MOVX_DPTR	0x3042	constant_00	local_straight_line
+0x9608		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9608		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9609		MOVX	XDATA	0x3043		MOVX_DPTR	0x3043	constant_00	local_straight_line
+0x960A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x960A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x960F		MOVX	XDATA	0x7020		MOVX_DPTR	0x7020	constant_30	local_straight_line
+0x9612		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9612		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9613		MOVX	XDATA	0x7021		MOVX_DPTR	0x7021	constant_30	local_straight_line
+0x9614		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9614		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9619		MOVX	XDATA	0x7024		MOVX_DPTR	0x7024	constant_22	local_straight_line
+0x961A		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x961A		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x961C		MOVX	XDATA	0x7025		MOVX_DPTR	0x7025	constant_00	local_straight_line
+0x961D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x961D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9620		MOVX	XDATA	0x7022		MOVX_DPTR	0x7022	constant_00	local_straight_line
+0x9621		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x9621		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x9624		MOVX	XDATA	0x7023		MOVX_DPTR	0x7023	constant_54	local_straight_line
+0x9625		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9625		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x962A		MOVX	XDATA	0x5061		MOVX_DPTR	0x5061	constant_22	local_straight_line
+0x962B		INC	SFR	0x82		implicit_DPTR_low			8051_core
+0x962B		INC	SFR	0x83		implicit_DPTR_high			8051_core
+0x962D		MOVX	XDATA	0x5062		MOVX_DPTR	0x5062	constant_00	local_straight_line
+0x962E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x962E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9633		MOVX	XDATA	0x5051		MOVX_DPTR	0x5051	constant_17	local_straight_line
+0x9634		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9634		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x963B		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x963B		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9640		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_01	local_straight_line
+0x9641		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x9641		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9649		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0x964A		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0x964A		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0x9650		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A	read_modify_write_or_20	local_straight_line
+0x9654		MOVX	XDATA	0x704A		MOVX_DPTR	0x704A	read_modify_write_and_DF	local_straight_line
+0x9655		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0x9697	0x9697	LCALL	IRAM	?		stack_push_2			unresolved
 0x9697	0x9697	LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0x969A	0x9697	LCALL	IRAM	?		stack_push_2			unresolved
@@ -6041,6 +7841,49 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xA5CC	0xA4C5	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xA5CC	0xA4C5	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xA5CF	0xA4C5	MOV	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0xA681		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA681		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA687		MOVX	XDATA	0x5064		MOVX_DPTR	0x5064	read_modify_write_and_F7	local_straight_line
+0xA688		SETB	SFR	0xA8	7	bit			encoded
+0xA68A		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0xA68C		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0xA68E		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0xA690		LCALL	IRAM	?		stack_push_2			unresolved
+0xA690		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xA693		CLR	SFR	0xA8	7	bit			encoded
+0xA696		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA696		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA69B		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_01	local_straight_line
+0xA69C		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA69C		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6A3		SETB	SFR	0xA8	7	bit			encoded
+0xA6A6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6A6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6AC		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6AC		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6B4		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0xA6B8		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0xA6BA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6BA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6BE		MOVX	XDATA	0x3E25		MOVX_DPTR	0x3E25		local_straight_line
+0xA6C1		MOV	IRAM	?		register_R4	0x04,0x0C,0x14,0x1C		bank_unresolved
+0xA6C3		MOV	IRAM	?		register_R5	0x05,0x0D,0x15,0x1D		bank_unresolved
+0xA6C5		MOV	IRAM	?		register_R7	0x07,0x0F,0x17,0x1F		bank_unresolved
+0xA6C7		LCALL	IRAM	?		stack_push_2			unresolved
+0xA6C7		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xA6CA		CLR	SFR	0xA8	7	bit			encoded
+0xA6CD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6CD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6D2		MOVX	XDATA	0x7026		MOVX_DPTR	0x7026	constant_01	local_straight_line
+0xA6D3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6D3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6DA		SETB	SFR	0xA8	7	bit			encoded
+0xA6DD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA6DD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA6E0		MOVX	XDATA	0x3E25		MOVX_DPTR	0x3E25	constant_00	local_straight_line
+0xA712		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xA712		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xA715		MOVX	XDATA	0x3E24		MOVX_DPTR	0x3E24		local_straight_line
 0xA719		MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xA719		MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xA726		MOVX	XDATA	0x3E33		MOVX_DPTR	0x3E33	constant_03	ghidra_inferred
@@ -7880,6 +9723,52 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xBC2F	0xBC26	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xBC2F	0xBC26	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xBC32	0xBC26	MOV	IRAM	?		register_R0	0x00,0x08,0x10,0x18		bank_unresolved
+0xBC4C		MOV	IRAM	0x69		direct_byte			encoded
+0xBC4E		MOV	IRAM	0x6A		direct_byte			encoded
+0xBC50		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC50		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC54		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC54		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC5C		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBC62		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBC63		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC63		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC69		MOVX	XDATA	0x7059		MOVX_DPTR	0x7059	read_modify_write_or_01	local_straight_line
+0xBC6A		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0xBC6C		MOV	IRAM	0x69		direct_byte			encoded
+0xBC6E		MOV	IRAM	0x6A		direct_byte			encoded
+0xBC70		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC70		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC74		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC74		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC7C		MOV	IRAM	0x69		direct_byte			encoded
+0xBC7E		MOV	IRAM	0x6A		direct_byte			encoded
+0xBC80		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC80		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC84		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC84		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC8E		MOV	IRAM	0x69		direct_byte			encoded
+0xBC90		MOV	IRAM	0x6A		direct_byte			encoded
+0xBC92		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC92		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBC96		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBC96		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBCA0		MOV	IRAM	0x69		direct_byte			encoded
+0xBCA2		MOV	IRAM	0x6A		direct_byte			encoded
+0xBCA4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBCA4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBCA8		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBCA8		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBCB2		MOV	IRAM	0x69		direct_byte			encoded
+0xBCB4		MOV	IRAM	0x6A		direct_byte			encoded
+0xBCB6		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBCB6		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBCBA		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xBCBA		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xBCC2		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBCC3		RET	SFR	0x81		implicit_stack_pointer			8051_core
+0xBCC7		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xBCC8		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0xBCD0	0xBC26	MOV	IRAM	0x6B		direct_byte			encoded
 0xBCD3	0xBC26	MOV	IRAM	0x6A		direct_byte			encoded
 0xBCD6	0xBC26	RET	SFR	0x81		implicit_stack_pointer			8051_core
@@ -8483,9 +10372,44 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xC2B2		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
 0xC2BA		LCALL	IRAM	?		stack_push_2			unresolved
 0xC2BA		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xC2C0		LCALL	IRAM	?		stack_push_2			unresolved
+0xC2C0		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xC2C3		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2C3		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC2C7		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078	constant_00	local_straight_line
+0xC2C8		MOV	IRAM	0x6C		direct_byte			encoded
+0xC2CB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2CB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC2D4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xC2D4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC2D9		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_08	local_straight_line
+0xC2DD		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2DD		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC2E1		MOVX	XDATA	0x7078		MOVX_DPTR	0x7078	constant_00	local_straight_line
+0xC2E2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2E2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC2E7		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_0F	local_straight_line
+0xC2EB		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2EB		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC2F4		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC2F4		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC2F9		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_10	local_straight_line
+0xC2FC		LCALL	IRAM	?		stack_push_2			unresolved
+0xC2FC		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xC301		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC301		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC306		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_01	local_straight_line
+0xC309		LCALL	IRAM	?		stack_push_2			unresolved
+0xC309		LCALL	SFR	0x81		implicit_stack_pointer			8051_core
+0xC30E		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC30E		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC313		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_0C	local_straight_line
+0xC314		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC314		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC31D		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC31D		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC38F		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC38F		MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC399		MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xC399		MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC39E		MOVX	XDATA	0x32AB		MOVX_DPTR	0x32AB	constant_01	local_straight_line
@@ -8601,6 +10525,10 @@ pc	function	mnemonic	space	target	bit	access	candidate_targets	value_or_pattern	
 0xC49A	0xC474	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC4A0	0xC474	MOVX	XDATA	0x7267		MOVX_DPTR	0x7267	read_modify_write_and_9F	local_straight_line
 0xC4A1	0xC474	RET	SFR	0x81		implicit_stack_pointer			8051_core
+0xC4A2		MOV	SFR	0x82		implicit_DPTR_low			8051_core
+0xC4A2		MOV	SFR	0x83		implicit_DPTR_high			8051_core
+0xC4AC		MOVX	XDATA	?		MOVX_DPTR			unresolved
+0xC4AD		RET	SFR	0x81		implicit_stack_pointer			8051_core
 0xC4AE	0xC4AE	MOV	SFR	0x82		implicit_DPTR_low			8051_core
 0xC4AE	0xC4AE	MOV	SFR	0x83		implicit_DPTR_high			8051_core
 0xC4B8	0xC4AE	MOVX	XDATA	0x7073		MOVX_DPTR	0x7073		ghidra_inferred

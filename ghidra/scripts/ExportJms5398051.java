@@ -177,8 +177,9 @@ public class ExportJms5398051 extends GhidraScript {
                       (IMAGE_END - IMAGE_START + 1) + "\n");
             out.write("file_offset_rule\tCPU address = 0x4000 + file offset\n");
             out.write(
-                "analysis_seed\t32 provisional stub slots, 2 command entries and targets " +
-                "of 3 apparent tables; not asserted interrupt vectors or semantic names\n");
+                "analysis_seed\t32 provisional stub slots, 2 command entries, targets of 3 " +
+                "apparent tables, and D52-correlated MOV DPTR,#0x7xxx entries; the latter " +
+                "are candidate starts, not semantic or function labels\n");
             out.write("rom_range\tCODE:0x0000..0x3FFF not supplied or initialized\n");
             out.write(
                 "other_8051_spaces\tUninitialized processor register/data spaces are not ROM " +
@@ -450,13 +451,13 @@ public class ExportJms5398051 extends GhidraScript {
                 "decompilation that follows it may be partial\n");
             if ("40.06".equals(version)) {
                 out.write(
-                    "inline_bytes_40_06\t0x4AAC..0x4AAF = 00 00 00 B4, " +
-                    "preserved as data; helper behavior unknown\n");
+                    "post_call_code_40_06\t0x4AAC..0x4AAE are three NOPs; " +
+                    "D52 lists opcode B4 at 0x4AAF, which Ghidra leaves undecoded\n");
             }
             else {
                 out.write(
-                    "inline_bytes_40_16\t0x4B58..0x4B5B = 00 00 00 3C, " +
-                    "preserved as data; helper behavior unknown\n");
+                    "post_call_code_40_16\t0x4B58..0x4B5A are three NOPs; " +
+                    "D52 lists opcode 3C at 0x4B5B, which Ghidra leaves undecoded\n");
             }
         }
     }

@@ -367,11 +367,13 @@ In the timer path, 40.06 sets registers `R6:R7=0x38F4`, `R4:R5=0x3218`
 and `R3=4` before calling unavailable code at `0x2B50`; a four-byte copy
 is a supported interpretation, not a fully measured compiler ABI. It then
 passes a four-byte value and the constant `0xB4` to another unavailable
-helper. The corresponding 40.16 sequence uses `0x3C` instead. Conditional
-branch targets land just after four bytes following the call to `0x1BF0`, so
-those bytes appear to be inline data; the helper's predicate, effects and
-timing units remain unverified. Do not let a linear disassembler interpret
-those bytes as confirmed instructions.
+helper. The corresponding 40.16 sequence uses `0x3C` instead. The sequence
+after the call to `0x1BF0` was previously mistaken for inline data. D52 and
+the bytes instead show three NOP instructions followed by a further
+instruction (`CJNE` at `0x4AAF` in 40.06, and an instruction beginning at
+`0x4B5B` in 40.16). Ghidra now decodes the NOPs but still leaves the following
+instruction undecoded. The ROM helper's predicate, effects and return
+semantics remain unverified.
 
 Static command-path tracing locates `E0 F4 E7` and `DF` recognition near CPU
 `0x8F30` and `0x8F3E` in 40.06, and `0x9804` and `0x9816` in 40.16.
@@ -464,11 +466,14 @@ registers; the range alone does not establish which.
 
 | Version | Decoded instructions | Write effects | XDATA stores (unknown target) | XDATA loads (unknown target) |
 |---|---:|---:|---:|---:|
-| 40.06 | 9,380 | 7,613 | 993 (34) | 903 (12) |
-| 40.16 | 11,808 | 9,406 | 1,282 (54) | 1,080 (17) |
+| 40.06 | 12,952 | 10,523 | 1,469 (82) | 1,247 (74) |
+| 40.16 | 14,022 | 11,334 | 1,585 (96) | 1,319 (62) |
 
 These are static sites in the current Ghidra listing, not execution counts
-or coverage of undisassembled bytes and unavailable ROM. `encoded` addresses
+or coverage of remaining undisassembled bytes and unavailable ROM. The
+listing includes blocks seeded from byte-matched D52 `MOV DPTR,#0x7xxx`
+instruction starts; those starts and surrounding D52 instructions remain
+provisional. `encoded` addresses
 come from an instruction; `local_straight_line` and `ghidra_inferred`
 addresses are candidates, not verified runtime values. Conflicting or multiple
 inferences remain `?` with alternatives. Constant and read/modify/write
@@ -546,16 +551,26 @@ Observed results:
   LED, so this is a GPIO/LED-register candidate.
 - **Absent from JMS539:** `0x703B` (JMS567 SATA port select), `0x708C`
   (JMS578 code-map), `0x7800`, and the `0x78E1..0x791E` command-state block.
-- **Coverage gap.** Of 47 JMS539 signature hits per image, 23 (40.06) and 19
-  (40.16) are in bytes Ghidra did not decode. For example, 40.06 has eight
-  `0x7078` references at `0xB81F..0xB8F0` and eleven of fifteen `0x7026`
-  references outside decoded code. The memory-write inventory therefore
-  undercounts MMIO use.
-- **Inline data after `LCALL 0x1BF0`.** 40.06 has 11 call sites and 40.16 has
-  12. Each is followed by four constant bytes, including ASCII `JM0P`, `JmmM`
-  and `DEFA`. Only one site per image is protected as data. Ghidra decoded the
-  inline bytes as code at 6 sites in 40.06 and 9 in 40.16. One resulting
-  bogus inventory row is 40.06 `0x49A0 INC @R0`.
+- **Coverage gap and recovery.** The D52 listings contain 574 and 602
+  `MOV DPTR,#0x7xxx` starts for 40.06 and 40.16. Regeneration parses the
+  byte-addressed listings, selects basic blocks containing those instructions,
+  verifies their bytes against the firmware, and asks Ghidra to disassemble
+  previously uncovered instructions. D52 is heuristic, so recovered code is
+  provisional and does not establish hardware semantics or function
+  boundaries. All such pointer starts are now present as Ghidra instruction
+  starts. Separately, 46 of 47 cross-chip signature hits in each version map
+  to decoded Ghidra instructions; one `EA`-off/`LCALL`/`EA`-on byte sequence
+  per version remains uncovered and is not forced into code without
+  instruction-boundary evidence. The reports below are regenerated from these
+  projects.
+- **Correction: post-`LCALL 0x1BF0` bytes are code.** The previous claim that
+  every call is followed by inline constants was wrong. The D52 listing shows
+  actual instruction continuations at all examined sites. In 40.06, three
+  NOPs at `0x4AAC..0x4AAE` precede `CJNE` at `0x4AAF`; in 40.16, three NOPs
+  at `0x4B58..0x4B5A` precede an instruction at `0x4B5B`. The old project
+  incorrectly marked the fourth byte as data. Recovery clears that stale data
+  and decodes the NOPs; Ghidra still leaves the following D52 instruction
+  undecoded. No ROM helper return behavior is inferred.
 
 Regenerate with:
 
@@ -622,15 +637,14 @@ references, decompilation and a manifest. Current coverage is:
 
 | Version | Instructions | Functions | Calls | Defined data units |
 |---|---:|---:|---:|---:|
-| 40.06 | 9,380 | 220 | 591 | 340 |
-| 40.16 | 11,808 | 246 | 744 | 347 |
+| 40.06 | 12,952 | 220 | 774 | 336 |
+| 40.16 | 14,022 | 246 | 847 | 343 |
 
 These are analysis results, not complete code coverage. Ghidra reports
 decompilation completion for each defined function, but also warns about
 unmapped ROM targets and control-flow warnings in both versions; the resulting
 C can be partial. Three apparent tables following `LCALL 0x1C2D` per version
-and the four bytes following each `LCALL 0x1BF0` are preserved as data rather
-than disassembled as code:
+are preserved as data rather than disassembled as code:
 
 | Table | 40.06 | 40.16 |
 |---|---|---|
