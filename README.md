@@ -65,6 +65,21 @@ Static analysis of this updater found:
   flash: when detected capacity is at least 128 KiB and exactly one of two
   64 KiB firmware copies passes its validity check, it writes the valid copy
   over the other. The Wine trace does not establish whether this path ran.
+- On the same JMS539 path, the flash routine writes the image at offset
+  `0x0000` and, when detected capacity is at least 128 KiB, writes and
+  verifies a second copy at `0x10000`. With smaller detected flash, it writes
+  only one copy.
+- A copy is valid when bytes `0xBFF0..0xBFF3` are `55 AA AA 55`, bytes
+  `0xBFF4..0xBFF7` hold the chip identifier (`5391` here), and the
+  big-endian word at `0xBFFE` matches a CRC-16 (polynomial `0x1021`, initial
+  value 0). The CRC processes bytes `0x0000..0xBFFB` as little-endian 32-bit
+  words, most significant nibble first. Both 64 KiB halves of the 128 KiB
+  capture and the downloaded 31.00.40.06 image pass this check (`F929`).
+- The updater's dual-copy logic suggests that the boot ROM may fall back to
+  the copy at `0x10000`, but this has not been verified. No public source was
+  found that documents boot-ROM fallback or a USB command that selects a copy.
+  If the flash is physically 64 KiB, the identical second half in the capture
+  is address wrap-around rather than a backup copy.
 - The JMS539 HDD-firmware branch can issue SCSI `WRITE(16)` commands to an
   area near the end of the selected disk. This branch is reachable through the
   `JMS539 HDD FW` option or a detected flash-type condition; its exact use on
