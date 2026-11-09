@@ -166,6 +166,35 @@ then-current USB port, device number and SCSI nodes; it must not be blindly
 rerun after a reconnect. Read tests can reset the whole dock, so unmount all
 its volumes before testing.
 
+## Installed 40.06 vs ORICO 40.16
+
+The first 49,408 bytes of the dock capture are byte-identical to the
+downloaded `JMS539_B_31.00.40.06.BIN`. That image was compared with ORICO's
+`JMS539B_PM_v40.16.BIN` (`sha256 58783dfa4cd214a2...`):
+
+| | 40.06 (installed) | 40.16 (ORICO) |
+|---|---|---|
+| File size | 49,408 | 49,408 |
+| Code end | ~`0x82C9` | ~`0x8C5C` (+2.4 KiB) |
+| Trailer | `55AAAA55 "5391"`, CRC `F929` | `55AAAA55 "5391"`, CRC `D414` |
+| CRC check | pass | pass |
+
+- Both images target the same `5391` chip ID and use the same header layout.
+  The interrupt and jump vectors at `0x30–0x6F` differ only because code moved.
+- After alignment, about 29 KiB of code is identical. Changes are spread
+  across about 36 larger insertions and deletions, so 40.16 is a substantive
+  revision, not just a configuration change.
+- The 256-byte configuration area at `0xC000` matches except for 5 bytes at
+  `0xC0F4`.
+- Debug strings added in 40.16 point to SATA bring-up and port-handling work:
+  `SATA_SET_UDMAMODE`, `software reset`, `sata port off`,
+  `id scan port`, `read_sector_count_signature`, `idle hdd-`,
+  `Temp boundary`, `compliance=` and `Timeout...`. No 40.06 feature string is
+  missing from 40.16.
+- The configuration change and the dock's `5392` product ID are not explained
+  by this diff. These findings do not establish that 40.16 is compatible with
+  the 6648SUSJ3.
+
 ## Physical read options
 
 A [JMS539 teardown](https://syscall.eu/blog/2018/03/12/aigo_part1/) captured
