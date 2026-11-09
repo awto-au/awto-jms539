@@ -29,15 +29,11 @@ revision or firmware compatibility.
 - ORICO's JMS539B version 40.16 package lists 3549/3559 and 9548/9558 models;
   it does not list 6648SUSJ3-BK. Its image contains identifier `5391` at
   offset `0xbff4`, while the dock's version response contains `5392`. The
-  significance of this difference is unknown. The archive was downloaded
-  over HTTP after HTTPS certificate verification failed, and its authenticity
-  has not been independently verified. Do not assume it is suitable for this
-  dock.
+  significance of this difference is unknown.
 - A [third-party listing](https://www.usbdev.ru/files/jmicron/jms539firmware/)
   provides an image named `JMS539_B_31.00.40.06.BIN`. All 49,408 bytes match
   the beginning of the dock's repeatable capture, including `5391` at
-  `0xbff4`. The archive's authenticity is unverified, and the image alone is
-  not a complete flash backup or a verified update package.
+  `0xbff4`. The image is shorter than the 64 KiB capture.
 - The attempted SPI probe returned `7f9d207f`. An earlier identification as
   `Pm25LD020` with 256 KiB capacity was a guess, not a finding; its proposed
   flash configuration has been disabled. The updater's table maps
@@ -176,6 +172,58 @@ offline checks with `python3 scripts/dev.py test`. The Ghidra script
 `ghidra/scripts/TraceUpdaterWritePlan.java` independently emulates the
 updater's chunk and CDB construction without executing its SCSI transport.
 
+## JMS567 settings tool review
+
+The complete source and comments of
+[xx25/jms567settings](https://github.com/xx25/jms567settings/tree/5ec8935c36132e586c80b39372d438903d307fe1)
+were reviewed at commit `5ec8935c36132e586c80b39372d438903d307fe1`. It targets
+the JMS567 family containing `##VER:0103`; neither local JMS539 image contains
+that marker. Its behavior must not be treated as a JMS539 programming or
+recovery procedure.
+
+Key paths: [read](https://github.com/xx25/jms567settings/blob/5ec8935c36132e586c80b39372d438903d307fe1/jms_settings.py#L140),
+[erase](https://github.com/xx25/jms567settings/blob/5ec8935c36132e586c80b39372d438903d307fe1/jms_settings.py#L151),
+[write safety wrapper](https://github.com/xx25/jms567settings/blob/5ec8935c36132e586c80b39372d438903d307fe1/jms_settings.py#L303),
+and [command handlers](https://github.com/xx25/jms567settings/blob/5ec8935c36132e586c80b39372d438903d307fe1/jms_settings.py#L395).
+
+| Commands | What the source does |
+|---|---|
+| `info` | Reads the chip and interprets UAS and a two-byte spin-down field even if the family marker is absent. Those field meanings are not established for this JMS539. |
+| `dump`, `verify` | Read a hard-coded 64 KiB in 4 KiB chunks, without the updater's status polling or a per-chunk length check. |
+| `restore`, `set-uas`, `set-spindown` | Issue `DF 02` erase, then rewrite 64 KiB, reset and read back; they do not merely write the changed configuration bytes. The source describes `DF 02` as a whole-chip erase on JMS567; its extent on JMS539 is unverified. |
+
+Other important limitations in that revision:
+
+- The family test is a substring search, not an exact version, flash-geometry
+  or CRC check. The new image must be 64 KiB, but the current read is not
+  length-checked before being saved as the backup. A short read containing
+  the marker, or `--force`, can therefore lead to an incomplete backup. The
+  setting commands can report "already set" before checking the family.
+- A short `dump` is written and reported successfully. `verify` exits with
+  an error on unequal lengths, but counts only differing bytes in the
+  overlapping prefix; it can report zero differences for an empty read.
+- After resetting, the tool reopens the same device path without establishing
+  that it is the same USB device. It ignores the write wrapper's failure
+  return, so a family-check refusal or failed post-write verification can
+  still result in exit status zero.
+- The printed recovery command puts the global `--force` option after the
+  `restore` subcommand, which its parser rejects. Its claims of ROM fallback
+  and universal reversibility are not verified for this dock.
+- The chip-info comment calls the version bytes BCD. The saved dock response
+  ends `1f 00 28 06`, which is not valid BCD; interpreting the individual
+  bytes as decimal gives the reported `31.00.40.06`.
+
+The reviewed
+[py3_sg revision](https://github.com/tvladyslav/py3_sg/blob/524492b11a6218841cc2d4fe8246bbf1e5674392/py3_sg.c)
+uses ordinary indirect I/O and returns `dxfer_len - resid` bytes for reads;
+its write wrapper does not check the residual. If the earlier full-residual
+behavior recurs with that helper, the tool could receive empty flash data,
+but this has not been tested against the dock. An offline simulation using
+synthetic files and a stub SCSI module reproduced an empty successful dump, a
+zero-byte forced backup and a 4 KiB backup accepted without `--force` when the
+marker was present. It also reproduced successful exits after family refusal
+and simulated readback failure. No SCSI commands were sent.
+
 ## Configuration decoding
 
 `python3 scripts/dev.py config IMAGE [OTHER_IMAGE]` decodes the first 256 bytes
@@ -265,7 +313,8 @@ its volumes before testing.
 
 The first 49,408 bytes of the dock capture are byte-identical to the
 downloaded `JMS539_B_31.00.40.06.BIN`. That image was compared with ORICO's
-`JMS539B_PM_v40.16.BIN` (`sha256 58783dfa4cd214a2...`):
+`JMS539B_PM_v40.16.BIN` (SHA-256
+`58783dfa4cd214a2b3590612ad15001d13aa38146f72f0c9cb9f779904b3b8f4`):
 
 | | 40.06 (installed) | 40.16 (ORICO) |
 |---|---|---|
@@ -288,8 +337,242 @@ downloaded `JMS539_B_31.00.40.06.BIN`. That image was compared with ORICO's
   `Temp boundary`, `compliance=` and `Timeout...`. No 40.06 feature string is
   missing from 40.16.
 - The configuration change does not explain the dock's `5392` product ID.
-  These findings do not establish that 40.16 is compatible with the
-  6648SUSJ3.
+
+## Offline 8051 image map and ABI evidence
+
+Offsets in this table are file/flash-read offsets, not 8051 code addresses.
+The installed capture has not been proven to span the physical flash.
+
+| File offsets | 40.06 capture / image | 40.16 image |
+|---|---|---|
+| `0x0000` to last nonzero byte | Through `0x82C9` | Through `0x8C5C` |
+| Following bytes through `0xBFEF` | Zero-filled | Zero-filled |
+| `0xBFF0`–`0xBFFF` | Marker, `5391`, metadata and CRC `F929` | Marker, `5391`, metadata and CRC `D414` |
+| `0xC000`–`0xC0FF` | Configuration | Configuration |
+| `0xC100`–`0xFFFF` | Zero-filled in the 64 KiB capture | Not present in the file |
+
+The nonzero body includes code, embedded data and strings; their boundaries
+are not fully classified. The CRC covers `0x0000`–`0xBFFB`, including most
+of the trailer, but not the configuration. The identical 128 KiB capture
+halves do not distinguish a second physical copy from address wrapping.
+
+The datasheet identifies an 8051 core. For the supplied code, a `0x4000`
+relocation is supported by the stub at file offset `0x0000`, which calls
+CPU address `0x4200`, and coherent target code at file offset `0x0200`.
+The existing D52 listings use this relocation. The low-address stubs are
+not yet classified as reset/interrupt vectors or a ROM API table, and calls
+below CPU `0x4000` reach code not supplied in these images.
+
+In the timer path, 40.06 sets registers `R6:R7=0x38F4`, `R4:R5=0x3218`
+and `R3=4` before calling unavailable code at `0x2B50`; a four-byte copy
+is a supported interpretation, not a fully measured compiler ABI. It then
+passes a four-byte value and the constant `0xB4` to another unavailable
+helper. The corresponding 40.16 sequence uses `0x3C` instead. Conditional
+branch targets land just after four bytes following the call to `0x1BF0`, so
+those bytes appear to be inline data; the helper's predicate, effects and
+timing units remain unverified. Do not let a linear disassembler interpret
+those bytes as confirmed instructions.
+
+Static command-path tracing locates `E0 F4 E7` and `DF` recognition near CPU
+`0x8F30` and `0x8F3E` in 40.06, and `0x9804` and `0x9816` in 40.16.
+On one conditional path, bytes `FF 04 4A 4D 55` at XDATA `0x300F..0x3013`
+set bit `0x21.5`, and `FF 04 4A 4D AA` clears it. That bit gates checks for
+`FF 04`, `E0 F4 E7` and `DF`. This is static code evidence, not proof that
+the path is active on the dock; the live tests of the exit command returned
+invalid-field errors.
+
+The candidate command dispatcher loads the first command byte and calls the
+unavailable helper at `0x1C2D`. The following bytes have the structure of a
+sorted inline table of two-byte targets and one-byte opcodes, ending in
+`00 00` and a default target. Its `DF` entries and the corresponding paths
+are:
+
+| | 40.06 | 40.16 |
+|---|---|---|
+| Dispatcher | `0x75A4` | `0x7CAE` |
+| Apparent inline table, including default | `0x75AB..0x7620` | `0x7CB5..0x7D24` |
+| `DF` target in table | `0x7683` | `0x7D84` |
+| `FB` check | `0x76CB` | `0x7DD9` |
+| Non-`FB` call to unavailable `0x1488` | `0x77D2` | `0x7EE0` |
+
+The `DF` path examines XDATA `0x301A`, consistent with CDB byte 11. For
+`FB`, it copies the apparent length and address fields into XDATA
+`0x3181..0x3182` and `0x317E..0x3180`; then one branch on the low nibble of
+byte 1 calls `0x3334`, `0x330F`, `0x3720` or `0x3251` for values 1, 2, 3 or
+7 respectively. The 40.06 and 40.16 branch instruction bytes are identical.
+Those helper bodies are outside the supplied slice. An `FA` byte takes the
+non-`FB` path into `0x1488`, whose body is also unavailable. Consequently,
+the exact read/write implementation, erase scope, status semantics and
+boot-copy selection remain unresolved.
+
+An offline comparison with the available Keil `C51S.LIB`, `C51C.LIB` and
+`C51L.LIB` used relocation-masked signatures: 155 non-short C-library
+function signatures produced no exact or heuristic near match in either
+supplied code slice; 19 were too short for reliable identification. The reused
+parser excludes `?C?` runtime helpers from that pass. A separate scan of 624
+helper segments across those libraries found 576 absent, 45 too short and three
+multiple matches in each image. The three are the same low-complexity
+signature, 11 zero bytes followed by `RET`, occurring in stub padding at CPU
+`0x4125` and `0x4165`; they do not establish a library match. Masked matching
+passed a synthetic positive control. `python3 scripts/keil_helpers.py --help`
+describes the helper scan, which uses the parser and matcher in
+`../awto-ddc/scripts`; its signatures and results are kept under ignored
+`analysis/initial/`.
+
+A local SDCC 4.6.4 probe, compiled for both small and large models, passed the
+first of three arguments in `DPTR` and the others through static parameter
+slots, unlike the register setup above. Neither test identifies the firmware
+compiler: runtime code may be in the unavailable lower-address region, and a
+ROM helper may use a custom ABI. The SDCC probe is also under
+`analysis/initial/`.
+
+No verified JMS539 SDK, library match, compiler family or exact compiler
+version is available yet. Do not transfer Realtek-specific Keil helper names
+or assume that a missing match disproves Keil or SDCC.
+
+### Relocated initialization checks
+
+The 40.06 function at CPU `0xB0CE` writes `5A C3 69 E1` to XDATA addresses
+`0x4C00..0x4C03`. The function at `0xB0E1` compares those four bytes and
+returns carry clear only if they all match. The startup path at `0x4200`
+checks them first and calls the writer when the comparison fails. The
+corresponding 40.16 functions at `0xBA40` and `0xBA53` are byte-identical.
+The purpose and persistence of that XDATA range are not established.
+
+### Memory writes and register candidates
+
+The decoded write inventory and XDATA-read inventory are tracked for both
+images:
+
+- [40.06 write sites](re/jms539/memory_write_sites_40.06.tsv),
+  [XDATA reads](re/jms539/memory_xdata_read_sites_40.06.tsv), and
+  [address summary](re/jms539/memory_address_summary_40.06.tsv)
+- [40.16 write sites](re/jms539/memory_write_sites_40.16.tsv),
+  [XDATA reads](re/jms539/memory_xdata_read_sites_40.16.tsv), and
+  [address summary](re/jms539/memory_address_summary_40.16.tsv)
+- [Curated observations and related-chip hypotheses](re/jms539/memory_findings.tsv)
+
+The write inventory distinguishes direct internal RAM (`0x00..0x7F`), direct
+SFRs (`0x80..0xFF`), bit-addressed locations, register banks, indirect internal
+RAM and XDATA. Register-bank selection, indirect pointers and stack addresses
+are retained as `?` where runtime state is unknown. A call has one
+`stack_push_2` site representing two pushed bytes. The inventory also records
+implicit DPTR and stack-pointer updates, but does not enumerate implicit
+accumulator, B or PSW effects, interrupt-hardware writes or reads outside
+XDATA. XDATA is a separate address space and may contain RAM or device
+registers; the range alone does not establish which.
+
+| Version | Decoded instructions | Write effects | XDATA stores (unknown target) | XDATA loads (unknown target) |
+|---|---:|---:|---:|---:|
+| 40.06 | 9,380 | 7,613 | 993 (34) | 903 (12) |
+| 40.16 | 11,808 | 9,406 | 1,282 (54) | 1,080 (17) |
+
+These are static sites in the current Ghidra listing, not execution counts
+or coverage of undisassembled bytes and unavailable ROM. `encoded` addresses
+come from an instruction; `local_straight_line` and `ghidra_inferred`
+addresses are candidates, not verified runtime values. Conflicting or multiple
+inferences remain `?` with alternatives. Constant and read/modify/write
+patterns are local observations, not proof of device behavior.
+
+The public [Synopsys DW8051 datasheet](https://www.keil.com/dd/docs/datashts/synopsys/dw8051_ds.pdf)
+describes dual pointers and configurable peripherals but does not identify
+JMS539's core or supply its register map. No direct `INC 0x86` selector
+pattern occurs in the supplied slices; this does not exclude other sequences
+or missing ROM. SFR `0xA8.7` is cleared and set around a command path, matching
+the standard 8051 interrupt-enable convention; this is a JMS539 candidate,
+not a confirmed register map. The 40.16 listing also writes SFR `0xE8` near
+`0xA8` changes, but its function is unknown. A
+[JMS539-specific teardown](https://syscall.eu/blog/2018/03/12/aigo_part1/)
+confirms an 8051 and shows a boot-time firmware capture but does not publish
+a register map; no JMS539-specific map was found in the public sources checked.
+
+The [JMS567 analysis](https://github.com/9500/ds500u3-jms567-uas/blob/743529e7a29febf501cc187b96f3691905ed3245/docs/firmware-analysis.md)
+uses XDATA `0x7043.0` to launch a command; both JMS539 images write `1` to
+`0x7043` in several paths. The
+[JMS578 SPI implementation](https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go)
+identifies `0x716D` as a DMA transfer limit; the JMS539 `DF FB` path writes
+`FF` there before copying apparent length bytes to `0x7166..0x7167`. These
+are useful cross-chip hypotheses, not confirmed JMS539 register semantics.
+The related JMS578 SPI addresses `0x7140`, `0x7141`, `0x714C` and `0x7150`
+have no fixed references in the current decoded listings.
+
+### Ghidra findings and sibling comparison
+
+The durable, image-hash-bound findings are in
+[`re/jms539/ghidra_names_40.06.tsv`](re/jms539/ghidra_names_40.06.tsv) and
+[`re/jms539/ghidra_names_40.16.tsv`](re/jms539/ghidra_names_40.16.tsv).
+Add each finding to the appropriate TSV with its CPU address, name, type,
+evidence, status and confidence. Only `[fw]`/`high` rows are applied to the
+project; lower-confidence rows remain candidates. Currently each version has
+nine applied findings and seven candidates. Confirmed function rows must
+point to existing Ghidra function entries; unrelated names and comments are
+not overwritten.
+
+The ignored `analysis/initial/ghidra-8051-research2/` workspace contains the
+saved projects and regenerated exports. The pipeline requires the existing
+`v40_06_code.bin`, `v40_16_code.bin` 48 KiB slices and matching `.d52`
+listings in `analysis/initial/jms539-31.00.40.06/`. These are generated from
+the first `0xC000` bytes of the respective images; D52's `-b -d -x4000`
+options produce the relocated listings. The firmware and generated
+disassembly remain Git-ignored.
+
+With `GHIDRA_HOME` pointing at a Ghidra installation, use:
+
+```bash
+# Create new projects only in an empty, dedicated workspace.
+python3 scripts/ghidra_8051.py import --version both --workspace analysis/initial/ghidra-8051-new
+
+# Apply current TSV findings and regenerate existing curated projects.
+python3 scripts/ghidra_8051.py regen --version both --workspace analysis/initial/ghidra-8051-research2
+
+# Regenerate the tracked memory inventories from the current exports.
+python3 scripts/memory_writes.py --workspace analysis/initial/ghidra-8051-research2 --output re/jms539
+
+# Produce a non-applying Ghidra Version Tracking report and a separate byte diff.
+python3 scripts/ghidra_8051.py vt --workspace analysis/initial/ghidra-8051-research2
+python3 scripts/ghidra_8051.py compare --workspace analysis/initial/ghidra-8051-research2
+```
+
+`import` refuses to overwrite a project; `regen` saves the applied findings
+and stages exports before publication. A project property tracks managed
+annotations: removing, downgrading or renaming an applied row makes `regen`
+stop rather than leave a stale annotation. Restore the row or import into a
+new workspace with the revised TSV. Newly confirmed rows and edits to their
+evidence comments can be applied by regeneration. Two consecutive
+regenerations produced byte-identical exports.
+
+The exports include findings, instructions, functions, data, calls,
+references, decompilation and a manifest. Current coverage is:
+
+| Version | Instructions | Functions | Calls | Defined data units |
+|---|---:|---:|---:|---:|
+| 40.06 | 9,380 | 220 | 591 | 340 |
+| 40.16 | 11,808 | 246 | 744 | 347 |
+
+These are analysis results, not complete code coverage. Ghidra reports
+decompilation completion for each defined function, but also warns about
+unmapped ROM targets and control-flow warnings in both versions; the resulting
+C can be partial. Three apparent tables following `LCALL 0x1C2D` per version
+and the four bytes following each `LCALL 0x1BF0` are preserved as data rather
+than disassembled as code:
+
+| Table | 40.06 | 40.16 |
+|---|---|---|
+| Main dispatch | `0x75AB..0x7620` (38 entries) | `0x7CB5..0x7D24` (36 entries) |
+| Secondary | `0x8FE6..0x9010` (13 entries) | `0x98BE..0x98E8` (13 entries) |
+| Tertiary | `0xA5BE..0xA609` (24 entries) | `0xAF23..0xAF6E` (24 entries) |
+
+The tracked
+[`vt_function_matches_40.06_40.16.tsv`](re/jms539/vt_function_matches_40.06_40.16.tsv)
+records the current Ghidra Version Tracking candidates: 28 exact-byte
+matches and 107 instruction matches, for 109 distinct
+function pairs. The minimum size is 10 bytes. Instruction matches are not
+necessarily byte-identical: the `0x4200` pair differs in eight bytes. No
+matches or names were applied automatically. A fresh report is written under
+the workspace's `comparison/` directory; review it before updating the tracked
+snapshot. The separate same-offset comparison found 14,571 matching and
+34,581 differing positions across the 49,152-byte slices; that is not Version
+Tracking.
 
 ## Physical read options
 
@@ -312,13 +595,11 @@ it and the device captures are also Git-ignored.
 The analyzed updater's SHA-256 is
 `c816bb55326f2643dc04d4961f5e090973701c53c509190266bca5fe66db7e2a`.
 The original ORICO archive's SHA-256 is
-`45f3aea7cb5ad52ad8a1e507cbd51431f229ac4e113a9796f193ea72b42bc791`;
-this identifies the downloaded file, not its authenticity.
+`45f3aea7cb5ad52ad8a1e507cbd51431f229ac4e113a9796f193ea72b42bc791`.
 The third-party 40.06 archive's SHA-256 is
 `f7c87e8261329bbb2985655469f60c23289f806dd457ad6e6c34a0beddb96171`;
 its 49,408-byte image hashes to
 `63f75ce11d34bd3dc6378e5ffd03b5f19ce816184af8bbf3ed85f2fb3fd5de14`.
-These hashes identify the local files, not their authenticity or suitability.
 
 To reapply the RTTI annotations to the matching executable in an existing
 Ghidra project:

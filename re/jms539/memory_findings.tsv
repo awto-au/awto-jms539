@@ -1,0 +1,25 @@
+# JMS539 address-space observations; related-chip labels remain hypotheses.
+# A dash means no related external source is cited for that row.
+# space	address	name	status	confidence	40.06_evidence	40.16_evidence	related_source
+SFR	0x86	second_dptr_selector_candidate	[guess]	low	No INC direct 0x86 pattern in the supplied code slice; ROM unavailable.	Same as 40.06.	https://www.keil.com/dd/docs/datashts/synopsys/dw8051_ds.pdf
+SFR	0xA8	interrupt_enable_candidate	[guess]	med	Bit 7 cleared at 0x757D and set at 0x758C around the XDATA 0x7043 write; matches standard 8051 IE.EA usage.	Bit 7 cleared at 0x7C87 and set at 0x7C96 around the corresponding write.	https://www.digikey.com/htmldatasheets/production/1009683/0/0/1/at89c51rc-rev-02.html
+SFR	0xE8	unclassified_sfr_E8	[fw]	high	No decoded write in this image.	Written with 0 at 0xC79E and with 1 at 0xC7EF near SFR 0xA8 changes; function unknown.	-
+XDATA	0x300F	command_byte_0_candidate	[guess]	med	Read at 0x75A7 before the main apparent dispatch table and compared on the vendor-gate path.	Read at 0x7CB1 and compared on the corresponding vendor-gate path.	-
+XDATA	0x3010	command_byte_1_candidate	[guess]	med	The low nibble selects one of four unavailable ROM calls on the DF FB path.	Same behavior at the corresponding relocated path.	-
+XDATA	0x301A	command_byte_11_candidate	[guess]	med	DF path tests this byte for FB; FA takes the non-FB path.	Same behavior at the corresponding relocated path.	-
+XDATA	0x3181	transfer_length_high_candidate	[guess]	med	Read at 0x778E and copied to XDATA 0x7166 on the DF FB path.	Read at 0x7E9C and copied to XDATA 0x7166.	-
+XDATA	0x3182	transfer_length_low_candidate	[guess]	med	Read at 0x7786 and copied to XDATA 0x7167 on the DF FB path.	Read at 0x7E94 and copied to XDATA 0x7167.	-
+XDATA	0x4C00	signature_byte_0	[fw]	high	The function at 0xB0CE writes 5A; 0xB0E1 compares it.	The function at 0xBA40 writes 5A; 0xBA53 compares it.	-
+XDATA	0x4C01	signature_byte_1	[fw]	high	The function at 0xB0CE writes C3; 0xB0E1 compares it.	The function at 0xBA40 writes C3; 0xBA53 compares it.	-
+XDATA	0x4C02	signature_byte_2	[fw]	high	The function at 0xB0CE writes 69; 0xB0E1 compares it.	The function at 0xBA40 writes 69; 0xBA53 compares it.	-
+XDATA	0x4C03	signature_byte_3	[fw]	high	The function at 0xB0CE writes E1; 0xB0E1 compares it.	The function at 0xBA40 writes E1; 0xBA53 compares it.	-
+XDATA	0x7043	command_launch_candidate	[guess]	med	Writes 01 at 0x758B, 0x99DE and 0x99E5; one path waits on XDATA 0x7094 afterward.	Writes 01 at 0x7C95, 0xA310 and 0xA317.	https://github.com/9500/ds500u3-jms567-uas/blob/743529e7a29febf501cc187b96f3691905ed3245/docs/firmware-analysis.md
+XDATA	0x7094	completion_state_candidate	[guess]	med	Clears it at 0x7586 and polls while IRAM bit 0x38 remains set.	Clears it at 0x7C90 and polls on the corresponding path.	-
+XDATA	0x7096	result_flags_candidate	[guess]	med	Reads it at 0x759A and tests bit 0.	Reads it at 0x7CA4 and tests bit 0.	-
+XDATA	0x7140	spi_tx_fifo_candidate	[guess]	low	No fixed reference in the current decoded listing; behavior may be in unavailable ROM.	Same limitation.	https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go
+XDATA	0x7141	spi_rx_selection_candidate	[guess]	low	No fixed reference in the current decoded listing; behavior may be in unavailable ROM.	Same limitation.	https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go
+XDATA	0x714C	spi_start_busy_candidate	[guess]	low	No fixed reference in the current decoded listing; behavior may be in unavailable ROM.	Same limitation.	https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go
+XDATA	0x7150	spi_receive_window_candidate	[guess]	low	No fixed reference in the current decoded listing; behavior may be in unavailable ROM.	Same limitation.	https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go
+XDATA	0x7166	transfer_length_high_register_candidate	[guess]	med	Writes XDATA 0x3181 to this location at 0x7792 on the DF FB path.	Writes XDATA 0x3181 at 0x7EA0 on the corresponding path.	-
+XDATA	0x7167	transfer_length_low_register_candidate	[guess]	med	Writes XDATA 0x3182 to this location at 0x778A on the DF FB path.	Writes XDATA 0x3182 at 0x7E98 on the corresponding path.	-
+XDATA	0x716D	spi_dma_limit_candidate	[guess]	med	Writes FF at 0x7782 before copying the apparent transfer length to 0x7166..0x7167.	Writes FF at 0x7E90 on the corresponding path.	https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/jmshal/spi.go

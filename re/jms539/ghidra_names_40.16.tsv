@@ -1,0 +1,20 @@
+# JMS539 31.00.40.16 code slice; CPU address = file offset + 0x4000.
+# image_sha256=b1107ea583c26a3b7040e23c54131107aeaf95761e2fcad66372abc70655070b
+# address	name	type	comment	status	confidence
+# [fw] records directly observed behavior; [guess] records an interpretation not applied as a name.
+CODE:4200	check_signature_initialization_candidate	func	Calls the XDATA signature checker and initializes several values if it returns carry set; the overall role is not established.	[guess]	med
+CODE:4B58	inline_1bf0_data_candidate	label	00 00 00 3C follow LCALL 0x1BF0; a nearby branch skips the four bytes. ROM helper and return semantics are unknown.	[guess]	med
+CODE:7CAE	command_dispatch_candidate	func	Loads XDATA 0x300F and calls unavailable 0x1C2D before a sorted target/opcode table; dispatch semantics are inferred.	[guess]	med
+CODE:7CB5	command_table_candidate	label	36 sorted three-byte target/opcode entries, followed by 00 00 and default 0x7F59; DF entry points to 0x7D84.	[guess]	med
+CODE:7D84	df_command_path_candidate	func	Apparent DF table target; checks byte at XDATA 0x301A and forwards or processes paths including FB.	[guess]	med
+CODE:7DD9	df_type_fb_check	label	Compares XDATA 0x301A against FB; on inequality branches to the call at 0x7EE0.	[fw]	high
+CODE:7E45	df_fb_mode_select	label	On the FB path, the low nibble at XDATA 0x3010 selects calls to 0x3334, 0x330F, 0x3720 or 0x3251 for 1, 2, 3 or 7.	[fw]	high
+CODE:7EE0	df_non_fb_rom_call	label	Calls unavailable code at 0x1488 on the non-FB path; FA reaches this path.	[fw]	high
+CODE:97E7	set_vendor_gate_bit	label	After comparisons with FF 04 4A 4D 55, sets bit 0x21.5 on this conditional path.	[fw]	high
+CODE:97F2	clear_vendor_gate_bit	label	After comparisons with FF 04 4A 4D AA, clears bit 0x21.5 on this conditional path.	[fw]	high
+CODE:9808	check_vendor_e0	label	Compares the command-buffer bytes with E0 F4 E7 before the conditional gate rejoins the command path.	[fw]	high
+CODE:981A	check_vendor_df	label	Compares the command-buffer opcode with DF on the conditional gate path.	[fw]	high
+CODE:98BE	iram_4d_switch_table_candidate	label	13 sorted target/opcode entries follow LCALL 0x1C2D after loading IRAM 0x4D; default target 0x9BFB. ROM helper semantics are unknown.	[guess]	med
+CODE:AF23	secondary_command_table_candidate	label	24 sorted target/opcode entries follow LCALL 0x1C2D after loading XDATA 0x300F; default target 0xAFD0. ROM helper semantics are unknown.	[guess]	med
+CODE:BA40	write_xdata_4c00_signature	func	Writes 5A C3 69 E1 to XDATA 0x4C00..0x4C03; the range's purpose and persistence are unknown.	[fw]	high
+CODE:BA53	check_xdata_4c00_signature	func	Compares XDATA 0x4C00..0x4C03 with 5A C3 69 E1 and returns carry clear only when all four match.	[fw]	high
