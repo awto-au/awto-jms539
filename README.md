@@ -496,6 +496,82 @@ are useful cross-chip hypotheses, not confirmed JMS539 register semantics.
 The related JMS578 SPI addresses `0x7140`, `0x7141`, `0x714C` and `0x7150`
 have no fixed references in the current decoded listings.
 
+### Cross-chip pattern sweep
+
+[`scripts/cross_chip_patterns.py`](scripts/cross_chip_patterns.py) searches
+whole images, not only Ghidra-decoded code, for the `MOV DPTR,#addr` idioms
+used by the public JMS567/JMS578 tools. It writes
+[`re/jms539/cross_chip_signatures.tsv`](re/jms539/cross_chip_signatures.tsv)
+(counts, plus how many hits start a decoded instruction) and
+[`re/jms539/cross_chip_signature_hits.tsv`](re/jms539/cross_chip_signature_hits.tsv).
+The comparison images were the
+[ds500u3 JMS567 build](https://github.com/9500/ds500u3-jms567-uas/blob/743529e7a29febf501cc187b96f3691905ed3245/firmware/DS500U3-JMS567-125.2.0.3-v3-uas-ncq.bin)
+and the [jms578flash test image](https://github.com/BertoldVdb/jms578flash/blob/30a91997f7d3a96b128041dbfa046c8536095887/image/test/image_flash.bin);
+these are not stored here. Byte matches suggest shared idioms but do not prove
+the same register semantics on JMS539.
+
+Observed results:
+
+- **JMS567-style NVS loader.** 40.06 `0x4971` (40.16 has the same sequence)
+  stores a 24-bit address `0x00C000` in XDATA `0x317E..0x3180`, stores
+  `0x3800` in `0x7160..0x7161` and calls `0x329F` with `EA` cleared. It then
+  checks `JM` at XDATA `0x38FE..0x38FF` and copies buffer offsets `0x00..0x03`,
+  `0x06..0x08` and a 32-byte string at `0x0C`. This matches the
+  [JMS567 layout](https://github.com/xx25/jms567settings/blob/5ec8935c36132e586c80b39372d438903d307fe1/jms_settings.py#L63-L71):
+  VID, PID, config block, iManufacturer and `JM` at `+0xFE`. The JMS567 loader
+  uses buffer `0x3B00` instead. This is static evidence of a flash-`0xC000`
+  configuration read on JMS539.
+- **`0x716x` DMA-style block, not the JMS578 PIO FIFO.** Neither JMS539 image
+  contains `MOV DPTR` to `0x7140`, `0x7142`, `0x7148`, `0x714C` or `0x7150`.
+  This conclusion covers the whole image, not just decoded code. The JMS567
+  image uses `0x7140` eight times and `0x714C` seven times. JMS539 instead
+  programs `0x7160..0x7161` (buffer), `0x7165`, `0x7166..0x7167` (length),
+  `0x7168` (`0x41` when byte `0x315F` is `0xAF`, otherwise `0x42`), `0x7169`
+  (the `0x315F` byte) and `0x716D`. `0xAF` is the AAI-program opcode on some
+  older SST SPI flashes; that link is a guess.
+  The jms578flash PIO SPI routine should therefore not be assumed to work on
+  JMS539. In the NVS loader, `0x3181/0x3182 = 00/01` feed `0x7166/0x7167`
+  while 256 bytes appear to be consumed. Either the length is counted in
+  pages, or the high/low labels on `0x7166/0x7167` are reversed.
+- **`0x7020..0x7026` + `0x7026.0` start/busy.** JMS539 writes a six-byte
+  descriptor at `0x7020..0x7025`, sets `0x7026=1` and polls bit 0 until it
+  clears. One 40.06 path at `0x9476` bounds the wait with a countdown at
+  `0x7084`; the other, at `0xA05D`, has no timeout. JMS578 `spi_tx.asm` and
+  the JMS567 image use the same registers.
+- **`0x7078` timer idiom.** 40.16 `0xC24E` clears `0x7078` and re-reads it
+  against `0x46`, matching the JMS578 `reset.asm` "reset slow timer, wait"
+  pattern.
+- **`0x7054`** is updated with read-modify-write operations (`AND EF/DF/7F`,
+  `OR 07`, `=FF`). JMS578 `dumprom.asm` writes `0xE1` there to switch on an
+  LED, so this is a GPIO/LED-register candidate.
+- **Absent from JMS539:** `0x703B` (JMS567 SATA port select), `0x708C`
+  (JMS578 code-map), `0x7800`, and the `0x78E1..0x791E` command-state block.
+- **Coverage gap.** Of 47 JMS539 signature hits per image, 23 (40.06) and 19
+  (40.16) are in bytes Ghidra did not decode. For example, 40.06 has eight
+  `0x7078` references at `0xB81F..0xB8F0` and eleven of fifteen `0x7026`
+  references outside decoded code. The memory-write inventory therefore
+  undercounts MMIO use.
+- **Inline data after `LCALL 0x1BF0`.** 40.06 has 11 call sites and 40.16 has
+  12. Each is followed by four constant bytes, including ASCII `JM0P`, `JmmM`
+  and `DEFA`. Only one site per image is protected as data. Ghidra decoded the
+  inline bytes as code at 6 sites in 40.06 and 9 in 40.16. One resulting
+  bogus inventory row is 40.06 `0x49A0 INC @R0`.
+
+Regenerate with:
+
+```bash
+E=analysis/initial/ghidra-8051-research2/exports
+F=analysis/initial/jms539-31.00.40.06
+python3 -B scripts/cross_chip_patterns.py \
+  --image 40.06=$F/v40_06_code.bin@0x4000 --image 40.16=$F/v40_16_code.bin@0x4000 \
+  --instructions 40.06=$E/40.06/instructions.tsv \
+  --instructions 40.16=$E/40.16/instructions.tsv \
+  --image jms567_ds500u3=DS500U3-JMS567-125.2.0.3-v3-uas-ncq.bin@0 \
+  --image jms578_test_flash=image_flash.bin@0 \
+  --counts re/jms539/cross_chip_signatures.tsv \
+  --hits re/jms539/cross_chip_signature_hits.tsv
+```
+
 ### Ghidra findings and sibling comparison
 
 The durable, image-hash-bound findings are in

@@ -1,0 +1,155 @@
+# 40.06: sha256=2d502d65491415aa22e5debc6acbc722c9012b6a5ca5f7d15784ae2275080a2d base=0x4000
+# 40.16: sha256=b1107ea583c26a3b7040e23c54131107aeaf95761e2fcad66372abc70655070b base=0x4000
+# jms567_ds500u3: sha256=9b91f14bc5df0d47f42368ea60e1b9753abab807d9b751e0f4b954c0c662f3b9 base=0x0000
+# jms578_test_flash: sha256=75ea725e93adaf432daaebe18ecf6266816f3c38c9d5d6f43c97449fb4f1aba7 base=0x0000
+image	signature	address	bytes	ghidra_coverage
+40.06	xdata_7020_descriptor	0x487B	90 70 20	undecoded
+40.06	xdata_7020_descriptor	0x48AF	90 70 20	undecoded
+40.06	xdata_7020_descriptor	0x8B3F	90 70 20	undecoded
+40.06	xdata_7020_descriptor	0x8D32	90 70 20	undecoded
+40.06	xdata_7020_descriptor	0x93E9	90 70 20	decoded
+40.06	xdata_7020_descriptor	0x9FB4	90 70 20	decoded
+40.06	xdata_7026_set_1	0x8B70	90 70 26 74 01 F0	undecoded
+40.06	xdata_7026_set_1	0x8D63	90 70 26 74 01 F0	undecoded
+40.06	xdata_7026_set_1	0x9470	90 70 26 74 01 F0	decoded
+40.06	xdata_7026_set_1	0x9D64	90 70 26 74 01 F0	undecoded
+40.06	xdata_7026_set_1	0x9D9B	90 70 26 74 01 F0	undecoded
+40.06	xdata_7026_set_1	0xA057	90 70 26 74 01 F0	decoded
+40.06	xdata_7026_poll_bit0	0x59F8	90 70 26 E0 20 E0	undecoded
+40.06	xdata_7026_poll_bit0	0x947C	90 70 26 E0 30 E0	decoded
+40.06	xdata_7026_poll_bit0	0x9D6A	90 70 26 E0 20 E0	undecoded
+40.06	xdata_7026_poll_bit0	0x9DA1	90 70 26 E0 20 E0	undecoded
+40.06	xdata_7026_poll_bit0	0xA05D	90 70 26 E0 20 E0	decoded
+40.06	xdata_7043_set_1	0x8C47	90 70 43 74 01 F0	undecoded
+40.06	xdata_7043_set_1	0x99D9	90 70 43 74 01 F0	decoded
+40.06	xdata_7043_set_1	0x99E0	90 70 43 74 01 F0	decoded
+40.06	xdata_7054_access	0x77C5	90 70 54	decoded
+40.06	xdata_7054_access	0xB26B	90 70 54	decoded
+40.06	xdata_7054_access	0xB28A	90 70 54	decoded
+40.06	xdata_7054_access	0xB384	90 70 54	decoded
+40.06	xdata_7078_access	0xB81F	90 70 78	undecoded
+40.06	xdata_7078_access	0xB824	90 70 78	undecoded
+40.06	xdata_7078_access	0xB856	90 70 78	undecoded
+40.06	xdata_7078_access	0xB85B	90 70 78	undecoded
+40.06	xdata_7078_access	0xB8C8	90 70 78	undecoded
+40.06	xdata_7078_access	0xB8D0	90 70 78	undecoded
+40.06	xdata_7078_access	0xB8E2	90 70 78	undecoded
+40.06	xdata_7078_access	0xB8F0	90 70 78	undecoded
+40.06	xdata_7160_store	0x496C	90 71 60 F0	decoded
+40.06	xdata_7161_store	0x4966	90 71 61 F0	decoded
+40.06	xdata_7166_store	0x778F	90 71 66 F0	decoded
+40.06	xdata_7167_store	0x7787	90 71 67 F0	decoded
+40.06	xdata_7168_access	0x77A0	90 71 68	decoded
+40.06	xdata_7169_access	0x77AE	90 71 69	decoded
+40.06	xdata_716D_set_FF	0x777D	90 71 6D 74 FF F0	decoded
+40.06	nvs_JM_signature_check	0x4983	E0 64 4A 60 03 02 4A EC A3 E0 64 4D	decoded
+40.06	ea_off_lcall_ea_on	0x4978	C2 AF 00 12 32 9F D2 AF	decoded
+40.06	ea_off_lcall_ea_on	0x5E85	C2 AF 00 12 3A 0C D2 AF	undecoded
+40.06	ea_off_lcall_ea_on	0x5EA2	C2 AF 00 12 38 69 D2 AF	undecoded
+40.06	ea_off_lcall_ea_on	0x6A10	C2 AF 00 12 6B 84 D2 AF	undecoded
+40.06	ea_off_lcall_ea_on	0x77B3	C2 AF 00 12 22 A5 D2 AF	decoded
+40.06	ea_off_lcall_ea_on	0x77BD	C2 AF 00 12 23 13 D2 AF	decoded
+40.06	ea_off_lcall_ea_on	0x97BF	C2 AF 00 12 37 D0 D2 AF	decoded
+40.16	xdata_7020_descriptor	0x490A	90 70 20	undecoded
+40.16	xdata_7020_descriptor	0x493E	90 70 20	undecoded
+40.16	xdata_7020_descriptor	0x9417	90 70 20	undecoded
+40.16	xdata_7020_descriptor	0x960A	90 70 20	undecoded
+40.16	xdata_7020_descriptor	0x9CC6	90 70 20	decoded
+40.16	xdata_7020_descriptor	0xA8FA	90 70 20	decoded
+40.16	xdata_7026_set_1	0x9448	90 70 26 74 01 F0	undecoded
+40.16	xdata_7026_set_1	0x963B	90 70 26 74 01 F0	undecoded
+40.16	xdata_7026_set_1	0x9D4D	90 70 26 74 01 F0	decoded
+40.16	xdata_7026_set_1	0xA696	90 70 26 74 01 F0	undecoded
+40.16	xdata_7026_set_1	0xA6CD	90 70 26 74 01 F0	undecoded
+40.16	xdata_7026_set_1	0xA99D	90 70 26 74 01 F0	decoded
+40.16	xdata_7026_poll_bit0	0x5BA6	90 70 26 E0 20 E0	undecoded
+40.16	xdata_7026_poll_bit0	0x9D59	90 70 26 E0 30 E0	decoded
+40.16	xdata_7026_poll_bit0	0xA69C	90 70 26 E0 20 E0	undecoded
+40.16	xdata_7026_poll_bit0	0xA6D3	90 70 26 E0 20 E0	undecoded
+40.16	xdata_7026_poll_bit0	0xA9A3	90 70 26 E0 20 E0	decoded
+40.16	xdata_7043_set_1	0x951F	90 70 43 74 01 F0	undecoded
+40.16	xdata_7043_set_1	0xA30B	90 70 43 74 01 F0	decoded
+40.16	xdata_7043_set_1	0xA312	90 70 43 74 01 F0	decoded
+40.16	xdata_7054_access	0x7ED3	90 70 54	decoded
+40.16	xdata_7054_access	0xBBF2	90 70 54	decoded
+40.16	xdata_7054_access	0xBC11	90 70 54	decoded
+40.16	xdata_7054_access	0xBD0F	90 70 54	decoded
+40.16	xdata_7078_access	0xC24E	90 70 78	decoded
+40.16	xdata_7078_access	0xC253	90 70 78	decoded
+40.16	xdata_7078_access	0xC2C3	90 70 78	undecoded
+40.16	xdata_7078_access	0xC2CB	90 70 78	undecoded
+40.16	xdata_7078_access	0xC2DD	90 70 78	undecoded
+40.16	xdata_7078_access	0xC2EB	90 70 78	undecoded
+40.16	xdata_7160_store	0x4A0D	90 71 60 F0	decoded
+40.16	xdata_7161_store	0x4A07	90 71 61 F0	decoded
+40.16	xdata_7166_store	0x7E9D	90 71 66 F0	decoded
+40.16	xdata_7167_store	0x7E95	90 71 67 F0	decoded
+40.16	xdata_7168_access	0x7EAE	90 71 68	decoded
+40.16	xdata_7169_access	0x7EBC	90 71 69	decoded
+40.16	xdata_716D_set_FF	0x7E8B	90 71 6D 74 FF F0	decoded
+40.16	nvs_JM_signature_check	0x4A24	E0 64 4A 60 03 02 4B AF A3 E0 64 4D	decoded
+40.16	ea_off_lcall_ea_on	0x4A19	C2 AF 00 12 32 9F D2 AF	decoded
+40.16	ea_off_lcall_ea_on	0x60EC	C2 AF 00 12 3A 0C D2 AF	undecoded
+40.16	ea_off_lcall_ea_on	0x6109	C2 AF 00 12 38 69 D2 AF	undecoded
+40.16	ea_off_lcall_ea_on	0x6ECA	C2 AF 00 12 70 3A D2 AF	undecoded
+40.16	ea_off_lcall_ea_on	0x7EC1	C2 AF 00 12 22 A5 D2 AF	decoded
+40.16	ea_off_lcall_ea_on	0x7ECB	C2 AF 00 12 23 13 D2 AF	decoded
+40.16	ea_off_lcall_ea_on	0xA0A0	C2 AF 00 12 37 D0 D2 AF	decoded
+40.16	ea_off_lcall_ea_on	0xA0F1	C2 AF 00 12 37 D0 D2 AF	decoded
+40.16	ea_off_lcall_ea_on	0xBF23	C2 AF 00 12 C3 AA D2 AF	decoded
+jms567_ds500u3	xdata_7020_descriptor	0x0794	90 70 20	no_listing
+jms567_ds500u3	xdata_7020_descriptor	0x07C8	90 70 20	no_listing
+jms567_ds500u3	xdata_7020_descriptor	0x144F	90 70 20	no_listing
+jms567_ds500u3	xdata_7020_descriptor	0x835F	90 70 20	no_listing
+jms567_ds500u3	xdata_7026_set_1	0x2BB1	90 70 26 74 01 F0	no_listing
+jms567_ds500u3	xdata_7026_set_1	0x3866	90 70 26 74 01 F0	no_listing
+jms567_ds500u3	xdata_7026_set_1	0x3C50	90 70 26 74 01 F0	no_listing
+jms567_ds500u3	xdata_7026_set_1	0x839C	90 70 26 74 01 F0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x14AE	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x2BB7	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x3C5A	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x6E39	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x7778	90 70 26 E0 30 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x83A2	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0x8A16	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_7026_poll_bit0	0xB9B9	90 70 26 E0 20 E0	no_listing
+jms567_ds500u3	xdata_703B_store	0x7B41	90 70 3B	no_listing
+jms567_ds500u3	xdata_7043_set_1	0x7B53	90 70 43 74 01 F0	no_listing
+jms567_ds500u3	xdata_7054_access	0xAAA0	90 70 54	no_listing
+jms567_ds500u3	xdata_7054_access	0xB3BF	90 70 54	no_listing
+jms567_ds500u3	xdata_7054_access	0xBAA3	90 70 54	no_listing
+jms567_ds500u3	xdata_7054_access	0xBAE0	90 70 54	no_listing
+jms567_ds500u3	xdata_7078_access	0xAC1F	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xAC4E	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xAF6F	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xAF91	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xAF96	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xAFB6	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xB07B	90 70 78	no_listing
+jms567_ds500u3	xdata_7078_access	0xB087	90 70 78	no_listing
+jms567_ds500u3	xdata_7140_access	0x1487	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0x149A	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBC84	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBC8F	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBCAD	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBCB8	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBCDA	90 71 40	no_listing
+jms567_ds500u3	xdata_7140_access	0xBCED	90 71 40	no_listing
+jms567_ds500u3	xdata_7142_access	0x148E	90 71 42	no_listing
+jms567_ds500u3	xdata_714C_access	0x142C	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0x143D	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0x14A5	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0xB9C7	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0xBC9A	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0xBCC4	90 71 4C	no_listing
+jms567_ds500u3	xdata_714C_access	0xBCF8	90 71 4C	no_listing
+jms567_ds500u3	xdata_7160_store	0x13F3	90 71 60 F0	no_listing
+jms567_ds500u3	xdata_7800_access	0x7537	90 78 00	no_listing
+jms567_ds500u3	xdata_7800_access	0x75C3	90 78 00	no_listing
+jms567_ds500u3	xdata_7800_access	0x8508	90 78 00	no_listing
+jms567_ds500u3	xdata_7800_access	0x8524	90 78 00	no_listing
+jms567_ds500u3	xdata_7800_access	0x856C	90 78 00	no_listing
+jms567_ds500u3	xdata_7800_access	0x8588	90 78 00	no_listing
+jms567_ds500u3	nvs_JM_signature_check	0x15A1	E0 64 4A 60 03 02 58 47 A3 E0 64 4D	no_listing
+jms578_test_flash	xdata_7054_access	0x0472	90 70 54	no_listing
+jms578_test_flash	xdata_708C_access	0x0452	90 70 8C	no_listing
