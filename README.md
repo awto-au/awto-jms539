@@ -176,6 +176,67 @@ offline checks with `python3 scripts/dev.py test`. The Ghidra script
 `ghidra/scripts/TraceUpdaterWritePlan.java` independently emulates the
 updater's chunk and CDB construction without executing its SCSI transport.
 
+## Configuration decoding
+
+`python3 scripts/dev.py config IMAGE [OTHER_IMAGE]` decodes the first 256 bytes
+at `0xC000` and, with two files, reports every differing byte in that range.
+It accepts regular files only and sends no device commands. It checks the
+firmware marker and CRC before decoding; **that CRC does not cover the
+configuration block**, so it does not verify the settings. The JSON includes
+the raw block, descriptor errors, flags, candidate timer values, and how much
+of the updater's 4 KiB overlay is available in each file.
+
+[xx25/jms567settings](https://github.com/xx25/jms567settings) describes a
+similar layout at `0xC000` for JMS567, while
+[9500/ds500u3-jms567-uas](https://github.com/9500/ds500u3-jms567-uas)
+independently documents related fields. The former restricts writes to a
+verified `##VER:0103` firmware family; neither local JMS539 image contains
+that marker. Its write operations and other chips' feature-bit definitions
+must not be assumed safe or applicable to this dock.
+
+The local 40.06 capture and 40.16 image have the same decoded identity:
+
+| Offset | Stored field |
+|---|---|
+| `0xC000`–`0xC003` | Little-endian USB VID:PID `152d:0539` |
+| `0xC00C`, `0xC030` | Packed ASCII USB strings `JMicron` and `USB to ATA/ATAPI Bridge` |
+| `0xC054` | Empty serial descriptor; the live all-zero USB serial is not explained |
+| `0xC0C8`, `0xC0D0` | Candidate SCSI inquiry strings `JMicron` and `Generic` |
+| `0xC0E0`, `0xC0F0`, `0xC0FE` | Markers `HD`, `BC`, `JM` |
+| `0xC0E7`, `0xC0F2`, `0xC0F3` | Raw flags `00`, `18`, `01`; most meanings remain unverified |
+
+Static analysis provides stronger evidence for the changed bytes. The 40.06
+loader sets up a read from `0xC000` into XDATA `0x3800`, checks the markers,
+and tests bit 3 of `0xC0F2`. When set, its code at CPU `0x4A79` sets up a
+four-byte copy from `0xC0F4` into a working countdown, labeled
+`Auto Spin Down Timer` in the firmware. The countdown code subtracts across
+all four bytes. The 40.16 code at `0x4B25` has a corresponding path.
+
+| Field | 40.06 capture | 40.16 image |
+|---|---|---|
+| `0xC0F2` bit 3 | Set | Set |
+| `0xC0F4`–`0xC0F7` | `2d 00 01 2c` = `754975020` big-endian | `00 00 07 08` = `1800` big-endian |
+| `0xC0F8` | `00` | `2d` = `45` |
+
+For comparison, the JMS567 tool interprets only `0xC0F6`–`0xC0F7` as a
+big-endian timeout in seconds, giving 300 and 1800. **That is not a verified
+five-minute timeout on this JMS539:** 40.06's high bytes are nonzero and the
+static code appears to use all four. The unit, ROM helper behavior and actual
+live spin-down timing remain unverified. In 40.06, `0xC0F4` is also copied
+separately to another working byte; 40.16 instead reads `0xC0F8` and labels
+that value `Temp boundary`, with a minimum of 45. Its units and effect are
+not confirmed.
+
+If the updater preserves the capture's configuration while installing 40.16,
+the new code would receive the capture's `2d 00 01 2c` timer bytes, not the
+candidate image's `00 00 07 08`. The resulting live behavior has not been
+tested.
+
+The 40.06 capture has zeros at `0xC100`–`0xCFFF`; the 40.16 image ends at
+`0xC100`, so its bytes beyond the decoded block cannot be compared. The
+capture and flash geometry remain provisional. Do not edit or flash either
+configuration based on these interpretations.
+
 ## Flash-read capture
 
 The dock returned `00 00` to a two-byte `FF 04 12` status read. Each subsequent
@@ -218,16 +279,17 @@ downloaded `JMS539_B_31.00.40.06.BIN`. That image was compared with ORICO's
 - After alignment, about 29 KiB of code is identical. Changes are spread
   across about 36 larger insertions and deletions, so 40.16 is a substantive
   revision, not just a configuration change.
-- The 256-byte configuration area at `0xC000` matches except for 5 bytes at
-  `0xC0F4`.
+- The apparent 256-byte configuration area at `0xC000` contains the USB
+  identifiers and strings. Four bytes differ at `0xC0F4` and
+  `0xC0F6`–`0xC0F8`; see Configuration decoding above.
 - Debug strings added in 40.16 point to SATA bring-up and port-handling work:
   `SATA_SET_UDMAMODE`, `software reset`, `sata port off`,
   `id scan port`, `read_sector_count_signature`, `idle hdd-`,
   `Temp boundary`, `compliance=` and `Timeout...`. No 40.06 feature string is
   missing from 40.16.
-- The configuration change and the dock's `5392` product ID are not explained
-  by this diff. These findings do not establish that 40.16 is compatible with
-  the 6648SUSJ3.
+- The configuration change does not explain the dock's `5392` product ID.
+  These findings do not establish that 40.16 is compatible with the
+  6648SUSJ3.
 
 ## Physical read options
 

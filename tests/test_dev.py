@@ -1,4 +1,4 @@
-"""Offline tests for the JMS539 version reader and updater write plan."""
+"""Offline tests for JMS539 version, configuration and updater planning."""
 
 from __future__ import annotations
 
@@ -24,6 +24,24 @@ def image_fixture(size: int = 0xC100) -> bytes:
         image[offset : offset + 4][::-1] for offset in range(0, 0xBFFC, 4)
     )
     image[0xBFFE:0xC000] = binascii.crc_hqx(reversed_words, 0).to_bytes(2, "big")
+    return bytes(image)
+
+
+def configuration_fixture(size: int = 0xC100) -> bytes:
+    image = bytearray(image_fixture(size))
+    block = bytearray(0x100)
+    block[:4] = bytes.fromhex("2d 15 39 05")
+    for offset, text in ((0x0C, b"Maker"), (0x30, b"USB bridge")):
+        block[offset : offset + 2] = bytes((2 + len(text) * 2, 3))
+        block[offset + 2 : offset + 2 + len(text)] = text
+    block[0xC8:0xD0] = b"Vendor  "
+    block[0xD0:0xD8] = b"Product\x00"
+    block[0xE0:0xE2] = b"HD"
+    block[0xF0:0xF2] = b"BC"
+    block[0xF2] = 0x08
+    block[0xF4:0xF9] = bytes.fromhex("2d 00 01 2c 00")
+    block[0xFE:0x100] = b"JM"
+    image[0xC000:0xC100] = block
     return bytes(image)
 
 
@@ -149,6 +167,96 @@ class WritePlanTests(unittest.TestCase):
         self.assertEqual(plan["zero_padding_bytes"], 0x100)
 
 
+class ConfigurationTests(unittest.TestCase):
+    def test_decodes_packed_ascii_and_all_timer_bytes(self) -> None:
+        result = dev.decode_configuration(configuration_fixture(), "fixture")
+        self.assertEqual((result["usb"]["vid"], result["usb"]["pid"]), ("152d", "0539"))
+        self.assertEqual(result["usb"]["manufacturer"]["text"], "Maker")
+        self.assertEqual(result["usb"]["product"]["text"], "USB bridge")
+        self.assertEqual(result["usb"]["serial"]["status"], "empty")
+        self.assertEqual(result["scsi_inquiry_candidates"]["vendor"]["text"], "Vendor")
+        self.assertTrue(all(result["markers_present"].values()))
+        timer = result["auto_spin_down"]
+        self.assertTrue(timer["gate_bit_3_set"])
+        self.assertEqual(timer["countdown_u32_be"], 0x2D00012C)
+        self.assertEqual(timer["low_u16_be"], 300)
+        self.assertEqual(result["overlay_bytes_available"], 0x100)
+        self.assertIsNone(result["nonzero_overlay_bytes_after_block"])
+        self.assertTrue(
+            any("does not cover" in warning for warning in result["warnings"])
+        )
+        self.assertTrue(
+            any("high 16 bits" in warning for warning in result["warnings"])
+        )
+
+    def test_string_descriptors_report_empty_invalid_and_truncated(self) -> None:
+        self.assertEqual(dev.parse_usb_string(b"\x02\x03", 0)["text"], "")
+        for descriptor in (
+            b"\x03\x03A",
+            b"\x04\x02A",
+            b"\x04\x03\xff",
+            b"\x04\x03\x00",
+        ):
+            with self.subTest(descriptor=descriptor):
+                result = dev.parse_usb_string(descriptor, 0)
+                self.assertEqual(result["status"], "invalid")
+                self.assertIn("error", result)
+        for descriptor in (b"\x04", b"\x06\x03A", b"\x40\x03" + b"A" * 30):
+            with self.subTest(descriptor=descriptor):
+                result = dev.parse_usb_string(descriptor, 0)
+                self.assertEqual(result["status"], "truncated")
+                self.assertIn("error", result)
+
+    def test_rejects_short_or_corrupted_images(self) -> None:
+        image = configuration_fixture()
+        with self.assertRaisesRegex(ValueError, "too short for the 256-byte block"):
+            dev.decode_configuration(image[:-1], "short")
+        corrupted = bytearray(image)
+        corrupted[10] ^= 1
+        with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+            dev.decode_configuration(bytes(corrupted), "corrupted")
+        with self.assertRaisesRegex(ValueError, "not a regular file"):
+            dev.read_regular_file(ROOT)
+
+    def test_reports_missing_markers_and_invalid_scsi_field(self) -> None:
+        image = bytearray(configuration_fixture())
+        image[0xC0FE:0xC100] = b"\x00\x00"
+        image[0xC0C8] = 0xFF
+        result = dev.decode_configuration(bytes(image), "fixture")
+        self.assertFalse(result["markers_present"]["JM"])
+        self.assertTrue(
+            any("markers are missing" in warning for warning in result["warnings"])
+        )
+        self.assertEqual(
+            result["scsi_inquiry_candidates"]["vendor"]["status"], "invalid"
+        )
+
+    def test_comparison_is_limited_to_the_complete_256_byte_block(self) -> None:
+        first = bytearray(configuration_fixture(0x10000))
+        second = bytearray(first)
+        second[0xC0F4:0xC0F9] = bytes.fromhex("00 00 07 08 2d")
+        second[0xC100] ^= 1
+        report = dev.build_configuration_report(
+            [("first", bytes(first)), ("second", bytes(second))]
+        )
+        comparison = report["comparison"]
+        self.assertEqual(comparison["changed_bytes"], 4)
+        self.assertEqual(
+            comparison["differences"],
+            [
+                {"offset": "0xc0f4", "before": "0x2d", "after": "0x00"},
+                {"offset": "0xc0f6", "before": "0x01", "after": "0x07"},
+                {"offset": "0xc0f7", "before": "0x2c", "after": "0x08"},
+                {"offset": "0xc0f8", "before": "0x00", "after": "0x2d"},
+            ],
+        )
+        self.assertEqual(
+            report["images"][1]["auto_spin_down"]["countdown_u32_be"], 1800
+        )
+        self.assertEqual(report["images"][1]["overlay_bytes_available"], 0x1000)
+        self.assertIsNotNone(report["images"][1]["nonzero_overlay_bytes_after_block"])
+
+
 class CliTests(unittest.TestCase):
     def test_describe_is_json_and_does_not_claim_a_flash_command(self) -> None:
         result = subprocess.run(
@@ -160,9 +268,37 @@ class CliTests(unittest.TestCase):
         description = json.loads(result.stdout)
         self.assertEqual(description["project"], "awto-jms539")
         self.assertTrue(
-            {"version", "plan", "test", "gate"} <= description["commands"].keys()
+            {"version", "plan", "config", "test", "gate"}
+            <= description["commands"].keys()
         )
         self.assertNotIn("flash", description["commands"])
+
+    def test_config_cli_compares_files_without_device_access(self) -> None:
+        scratch = ROOT / "tmp"
+        scratch.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as directory:
+            first = Path(directory) / "first.bin"
+            second = Path(directory) / "second.bin"
+            first.write_bytes(configuration_fixture())
+            changed = bytearray(configuration_fixture())
+            changed[0xC0F4:0xC0F9] = bytes.fromhex("00 00 07 08 2d")
+            second.write_bytes(changed)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-B",
+                    str(ROOT / "scripts" / "dev.py"),
+                    "config",
+                    str(first),
+                    str(second),
+                ],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+        report = json.loads(result.stdout)
+        self.assertEqual(report["images"][0]["usb"]["manufacturer"]["text"], "Maker")
+        self.assertEqual(report["comparison"]["changed_bytes"], 4)
 
     def test_version_cli_with_fake_sg_raw(self) -> None:
         scratch = ROOT / "tmp"

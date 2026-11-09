@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""JMS539 research CLI: read the version or inspect an offline write plan.
+"""JMS539 research CLI: read the version or inspect firmware files offline.
 
 Usage:
     python3 scripts/dev.py describe
     sudo python3 scripts/dev.py version /dev/sgN
     python3 scripts/dev.py plan IMAGE --backup CAPTURE
+    python3 scripts/dev.py config IMAGE [OTHER_IMAGE]
     python3 scripts/dev.py test
 
-The plan command does not communicate with a device or write firmware.
+The plan and config commands do not communicate with a device or write firmware.
 """
 
 from __future__ import annotations
@@ -30,6 +31,7 @@ COMMANDS = {
     "doctor": "Check the Python interpreter and sg_raw",
     "version": "Read the version from an explicitly selected SCSI generic device",
     "plan": "Reconstruct an updater write attempt without accessing hardware",
+    "config": "Decode and optionally compare configuration in offline images",
     "test": "Run the offline test suite",
     "gate": "Run the pre-commit checks",
 }
@@ -39,6 +41,8 @@ CRC_OFFSET = 0xBFFE
 MARKER_OFFSET = 0xBFF0
 CONFIG_OFFSET = 0xC000
 CONFIG_SIZE = 0x1000
+CONFIG_BLOCK_SIZE = 0x100
+STRING_SLOT_SIZE = 0x20
 MAX_CHUNK = 0x2000
 VERSION_CDB = ("e0", "f4", "e7", "00", "00", "00")
 
@@ -283,6 +287,148 @@ def build_plan(image: bytes, backup: bytes | None, mode: int) -> dict:
     }
 
 
+def parse_usb_string(block: bytes, offset: int) -> dict:
+    slot = block[offset : offset + STRING_SLOT_SIZE]
+    result = {"offset": f"0x{CONFIG_OFFSET + offset:04x}"}
+    if len(slot) < 2:
+        return {**result, "status": "truncated", "error": "missing descriptor header"}
+
+    length, descriptor_type = slot[:2]
+    result.update(
+        declared_usb_length=length,
+        descriptor_type=f"0x{descriptor_type:02x}",
+    )
+    if length == 0:
+        return {**result, "status": "empty", "text": None}
+    if length < 2 or length % 2:
+        return {**result, "status": "invalid", "error": "invalid USB descriptor length"}
+    if descriptor_type != 3:
+        return {**result, "status": "invalid", "error": "not a USB string descriptor"}
+
+    characters = (length - 2) // 2
+    if characters > len(slot) - 2:
+        return {
+            **result,
+            "status": "truncated",
+            "error": "declared string exceeds the available packed ASCII slot",
+        }
+    data = slot[2 : 2 + characters]
+    if b"\x00" in data:
+        return {
+            **result,
+            "status": "invalid",
+            "error": "string ends before its declared USB descriptor length",
+        }
+    try:
+        text = data.decode("ascii")
+    except UnicodeDecodeError:
+        return {**result, "status": "invalid", "error": "string is not packed ASCII"}
+    return {**result, "status": "ok", "text": text}
+
+
+def parse_scsi_string(data: bytes) -> dict:
+    result = {"raw": data.hex(" ")}
+    try:
+        text = data.rstrip(b"\x00 ").decode("ascii")
+    except UnicodeDecodeError:
+        return {**result, "status": "invalid", "error": "field is not ASCII"}
+    return {**result, "status": "ok", "text": text}
+
+
+def decode_configuration(image: bytes, label: str) -> dict:
+    end = CONFIG_OFFSET + CONFIG_BLOCK_SIZE
+    if len(image) < end:
+        raise ValueError(f"{label} is too short for the 256-byte block at 0xc000")
+    crc = validate_image(image, label)
+    block = image[CONFIG_OFFSET:end]
+    overlay = image[CONFIG_OFFSET : CONFIG_OFFSET + CONFIG_SIZE]
+    overlay_tail = overlay[CONFIG_BLOCK_SIZE:]
+    markers = {
+        "HD": block[0xE0:0xE2] == b"HD",
+        "BC": block[0xF0:0xF2] == b"BC",
+        "JM": block[0xFE:0x100] == b"JM",
+    }
+    warnings = [
+        "Offline file interpretation only; capture reliability and live behavior are unverified.",
+        "The firmware CRC does not cover the configuration block.",
+        "The timer layout is based on static analysis of JMS539 40.06 and 40.16; its time unit and effective runtime are unverified.",
+    ]
+    if not all(markers.values()):
+        warnings.append("One or more expected configuration markers are missing.")
+    if block[0xF4:0xF6] != b"\x00\x00":
+        warnings.append(
+            "The timer's high 16 bits are nonzero; its low 16 bits alone are not the full countdown."
+        )
+    return {
+        "file": label,
+        "file_bytes": len(image),
+        "sha256": hashlib.sha256(image).hexdigest(),
+        "firmware_crc16": f"{crc:04x}",
+        "warnings": warnings,
+        "usb": {
+            "vid": f"{int.from_bytes(block[0:2], 'little'):04x}",
+            "pid": f"{int.from_bytes(block[2:4], 'little'):04x}",
+            "manufacturer": parse_usb_string(block, 0x0C),
+            "product": parse_usb_string(block, 0x30),
+            "serial": parse_usb_string(block, 0x54),
+        },
+        "scsi_inquiry_candidates": {
+            "vendor": parse_scsi_string(block[0xC8:0xD0]),
+            "product": parse_scsi_string(block[0xD0:0xE0]),
+        },
+        "markers_present": markers,
+        "flags": {
+            f"0x{CONFIG_OFFSET + offset:04x}": f"0x{block[offset]:02x}"
+            for offset in (0xE7, 0xF2, 0xF3)
+        },
+        "auto_spin_down": {
+            "gate_bit_3_set": bool(block[0xF2] & 0x08),
+            "countdown_offset": "0xc0f4",
+            "countdown_raw": block[0xF4:0xF8].hex(" "),
+            "countdown_u32_be": int.from_bytes(block[0xF4:0xF8], "big"),
+            "low_u16_be": int.from_bytes(block[0xF6:0xF8], "big"),
+            "time_unit": "unverified",
+        },
+        "byte_at_c0f8": f"0x{block[0xF8]:02x}",
+        "overlay_bytes_available": len(overlay),
+        "nonzero_overlay_bytes_after_block": (
+            sum(bool(byte) for byte in overlay_tail) if overlay_tail else None
+        ),
+        "configuration_raw": block.hex(" "),
+    }
+
+
+def build_configuration_report(images: list[tuple[str, bytes]]) -> dict:
+    if len(images) not in (1, 2):
+        raise ValueError("configuration decoding requires one or two images")
+    decoded = [decode_configuration(image, label) for label, image in images]
+    report = {"images": decoded}
+    if len(images) == 2:
+        first = images[0][1][CONFIG_OFFSET : CONFIG_OFFSET + CONFIG_BLOCK_SIZE]
+        second = images[1][1][CONFIG_OFFSET : CONFIG_OFFSET + CONFIG_BLOCK_SIZE]
+        differences = [
+            {
+                "offset": f"0x{CONFIG_OFFSET + offset:04x}",
+                "before": f"0x{left:02x}",
+                "after": f"0x{right:02x}",
+            }
+            for offset, (left, right) in enumerate(zip(first, second))
+            if left != right
+        ]
+        report["comparison"] = {
+            "range": "0xc000-0xc0ff",
+            "changed_bytes": len(differences),
+            "differences": differences,
+        }
+    return report
+
+
+def read_regular_file(path: Path) -> bytes:
+    if not path.is_file():
+        raise ValueError(f"not a regular file: {path}")
+    return path.read_bytes()
+
+
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -302,6 +448,11 @@ def make_parser() -> argparse.ArgumentParser:
         "--use-image-config", action="store_true", help="use configuration in image"
     )
     plan.add_argument("--mode", type=int, choices=(1, 2, 3), default=2)
+    config_parser = subparsers.add_parser("config", help=COMMANDS["config"])
+    config_parser.add_argument("image", type=Path, help="firmware image or capture")
+    config_parser.add_argument(
+        "other_image", type=Path, nargs="?", help="optional image to compare"
+    )
     return parser
 
 
@@ -364,6 +515,13 @@ def main(argv: list[str] | None = None) -> int:
             image = args.image.read_bytes()
             backup = args.backup.read_bytes() if args.backup else None
             reporter.output(json.dumps(build_plan(image, backup, args.mode), indent=2))
+            return 0
+        if args.command == "config":
+            paths = [args.image]
+            if args.other_image is not None:
+                paths.append(args.other_image)
+            images = [(str(path), read_regular_file(path)) for path in paths]
+            reporter.output(json.dumps(build_configuration_report(images), indent=2))
             return 0
         return run_tests(root, reporter)
     except (OSError, ValueError, RuntimeError) as exc:
