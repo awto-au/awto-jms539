@@ -4,6 +4,7 @@
 tmp/
 
 # Local research material: vendor binaries, derived disassembly, and logs.
+/JMS539_B_31.00.40.06.rar
 /firmware/orico/
 /firmware/device/
 /analysis/initial/
