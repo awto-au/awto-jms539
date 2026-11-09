@@ -57,6 +57,10 @@ Static analysis of this updater found:
   area near the end of the selected disk. This branch is reachable through the
   `JMS539 HDD FW` option or a detected flash-type condition; its exact use on
   this dock has not been established.
+- The JMS539 backup path polls a status bit using `FF 04 12` before each
+  `DF 10 ... FA` read, in chunks of up to 8 KiB. This is a static finding,
+  not a working backup procedure: the earlier direct read timed out, and it
+  is unknown whether the installed firmware supports this sequence.
 - In the JMS539 image-check path, `FUN_00413ab0` checks only the first three
   characters of the chip identifier. Passing that check would not establish
   that a `5391` image is compatible with a dock reporting `5392`.
@@ -100,6 +104,16 @@ establishes JMS539 support for this ID.
 `tools/read_version.sh /dev/sgN` sends only the version command to the
 explicitly supplied SCSI generic node. Verify the node and its USB parent
 before use; names such as `/dev/sg2` can change after reconnecting.
+
+## Physical read options
+
+A [JMS539 teardown](https://syscall.eu/blog/2018/03/12/aigo_part1/) captured
+48 KiB of firmware by monitoring SPI traffic at boot on a different device.
+That technique captures what the bridge reads, not necessarily every byte of
+flash. Reading the complete flash with an external programmer is another
+possibility, but requires identifying this dock's chip, voltage and pinout
+and preventing power conflicts with the dock. Neither method has been tested
+on this unit.
 
 ## Local research files
 
