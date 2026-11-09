@@ -14,9 +14,9 @@ Research into a four-bay ORICO USB-SATA dock reporting JMicron USB ID
 - A later targeted, data-in-only probe of the updater's `DF ... FA` flash-read
   command returned no data and timed out. Linux reset the dock. A subsequent
   standard SCSI readiness check also timed out and triggered another dock
-  reset, so the still-present device nodes do not establish that it is
-  responsive. Stop probing; the dock may need to be power-cycled after its
-  drives are confirmed unused and unmounted.
+  reset. After a power cycle, both disks re-enumerated and the kernel read their
+  capacities; the 1 TB volume was automatically mounted. No further firmware
+  commands were sent.
 - ORICO's JMS539B version 40.16 package lists 3549/3559 and 9548/9558 models;
   it does not list 6648. The archive was downloaded over HTTP after HTTPS
   certificate verification failed, and its authenticity has not been
