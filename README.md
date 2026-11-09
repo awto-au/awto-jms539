@@ -69,15 +69,23 @@ Static analysis of this updater found:
   `0x0000` and, when detected capacity is at least 128 KiB, writes and
   verifies a second copy at `0x10000`. With smaller detected flash, it writes
   only one copy.
+- In one update configuration, that routine first reads 4 KiB from offset
+  `0xC000` and overlays it on the image in memory. The write length depends
+  on the input image; blindly writing a padded image would not necessarily
+  preserve the dock's existing configuration.
+- The updater chooses write flags and chunk boundaries using its detected
+  flash type and geometry. The actual erase scope on this dock is unverified;
+  limiting requested write addresses to the first 64 KiB does not by itself
+  establish that higher addresses would be preserved.
 - A copy is valid when bytes `0xBFF0..0xBFF3` are `55 AA AA 55`, bytes
   `0xBFF4..0xBFF7` hold the chip identifier (`5391` here), and the
   big-endian word at `0xBFFE` matches a CRC-16 (polynomial `0x1021`, initial
   value 0). The CRC processes bytes `0x0000..0xBFFB` as little-endian 32-bit
   words, most significant nibble first. Both 64 KiB halves of the 128 KiB
   capture and the downloaded 31.00.40.06 image pass this check (`F929`).
-- The updater's dual-copy logic suggests that the boot ROM may fall back to
-  the copy at `0x10000`, but this has not been verified. No public source was
-  found that documents boot-ROM fallback or a USB command that selects a copy.
+- The updater's dual-copy logic does not establish that the boot ROM falls
+  back to the copy at `0x10000`. No public source was found that documents
+  boot-ROM fallback or a USB command that selects a copy.
   If the flash is physically 64 KiB, the identical second half in the capture
   is address wrap-around rather than a backup copy.
 - The JMS539 HDD-firmware branch can issue SCSI `WRITE(16)` commands to an
@@ -138,9 +146,35 @@ recommends USB 2.0 for updating a different JMS539 enclosure. That is not a
 verified fix for this dock; a failed read can reset the whole dock and
 interrupt mounted volumes.
 
-`tools/read_version.sh /dev/sgN` sends only the version command to the
-explicitly supplied SCSI generic node. Verify the node and its USB parent
-before use; names such as `/dev/sg2` can change after reconnecting.
+The Python entry point is `scripts/dev.py`; run
+`python3 scripts/dev.py describe` for machine-readable commands or
+`python3 scripts/dev.py --help` for help. Output is logged to
+`tmp/logs/dev.log`.
+
+`sudo python3 scripts/dev.py version /dev/sgN` sends only the version command
+to the explicitly supplied SCSI generic node. Verify the node and its USB
+parent before use; names such as `/dev/sg2` can change after reconnecting.
+The command requires `sg_raw` and rejects short or invalid version responses.
+
+`python3 scripts/dev.py plan IMAGE --backup CAPTURE` reconstructs a single
+first-region write attempt **offline**, assuming updater flash type 1. It
+checks the image and capture trailers and CRCs, overlays the capture's
+configuration as the updater does when NVRAM preservation is selected, and
+reports the resulting lengths, hashes and CDBs. Use `--use-image-config`
+instead of `--backup` to model the alternative. `--mode` selects the initial
+mode 2 or retry modes 1 and 3; mode 3 is used by the updater's erase-only path
+and may erase the whole flash. The plan does not include status polling,
+readback or reset commands. For a `0xC100`-byte image, only the first `0x100`
+bytes of the overlaid configuration are included in the updater's comparison,
+followed by `0x100` zero-filled transfer bytes.
+
+This is not a flash implementation or a safe hardware procedure. Flash
+identity, physical erase scope and data-out behavior are unverified, and
+the addresses in a plan do not prove that other flash regions are preserved.
+The actual updater can retry with mode 3 and write a second region. Run the
+offline checks with `python3 scripts/dev.py test`. The Ghidra script
+`ghidra/scripts/TraceUpdaterWritePlan.java` independently emulates the
+updater's chunk and CDB construction without executing its SCSI transport.
 
 ## Flash-read capture
 
@@ -228,6 +262,5 @@ To reapply the RTTI annotations to the matching executable in an existing
 Ghidra project:
 
 ```bash
-analyzeHeadless ghidra updater -process FwUpdateTool_v1_17_12.exe \
-  -noanalysis -scriptPath ghidra/scripts -postScript RecoverUpdaterRtti.java
+analyzeHeadless ghidra updater -process FwUpdateTool_v1_17_12.exe -noanalysis -scriptPath ghidra/scripts -postScript RecoverUpdaterRtti.java
 ```
