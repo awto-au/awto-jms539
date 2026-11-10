@@ -189,6 +189,30 @@ class ConfigurationTests(unittest.TestCase):
             any("high 16 bits" in warning for warning in result["warnings"])
         )
 
+    def test_decodes_feature_bits_string_indexes_and_temp_minimum(self) -> None:
+        image = bytearray(configuration_fixture())
+        image[0xC006:0xC009] = bytes((10, 11, 5))
+        image[0xC0E7] = 0x07
+        image[0xC0E8:0xC0EC] = (0x800 * 3).to_bytes(4, "big")
+        result = dev.decode_configuration(bytes(image), "fixture")
+        self.assertEqual(
+            result["usb_string_indexes"],
+            {"iManufacturer": 10, "iProduct": 11, "iSerialNumber": 5},
+        )
+        features = result["feature_byte_c0e7"]
+        self.assertTrue(features["applied_by_firmware"])
+        self.assertTrue(features["bit0_bus_powered_candidate"])
+        self.assertTrue(features["bit1_aes_enabled"])
+        self.assertTrue(features["bit2_extra_lun_odd"])
+        self.assertFalse(features["bit4_over_2tb_multi_lun_tool_only"])
+        self.assertEqual(features["odd_size_bytes_c0e8_be"], 0x1800)
+        self.assertEqual(result["temp_boundary_40_16"], 45)
+        image[0xC0E0:0xC0E2] = b"\x00\x00"
+        image[0xC0F8] = 60
+        result = dev.decode_configuration(bytes(image), "fixture")
+        self.assertFalse(result["feature_byte_c0e7"]["applied_by_firmware"])
+        self.assertEqual(result["temp_boundary_40_16"], 60)
+
     def test_string_descriptors_report_empty_invalid_and_truncated(self) -> None:
         self.assertEqual(dev.parse_usb_string(b"\x02\x03", 0)["text"], "")
         for descriptor in (

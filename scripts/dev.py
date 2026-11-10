@@ -351,13 +351,14 @@ def decode_configuration(image: bytes, label: str) -> dict:
     warnings = [
         "Offline file interpretation only; capture reliability and live behavior are unverified.",
         "The firmware CRC does not cover the configuration block.",
-        "The timer layout is based on static analysis of JMS539 40.06 and 40.16; its time unit and effective runtime are unverified.",
+        "The timer layout is based on static analysis of JMS539 40.06 and 40.16 and JMicron's JMS539B tool, which stores minutes x 60; the firmware's tick period is in unavailable ROM, so live timing is unverified.",
     ]
     if not all(markers.values()):
         warnings.append("One or more expected configuration markers are missing.")
     if block[0xF4:0xF6] != b"\x00\x00":
         warnings.append(
-            "The timer's high 16 bits are nonzero; its low 16 bits alone are not the full countdown."
+            "The timer's high 16 bits are nonzero; its low 16 bits alone are not the full countdown. "
+            "40.06 also copies 0xC0F4 separately, so a nonzero 0xC0F4 inflates its four-byte timer."
         )
     return {
         "file": label,
@@ -377,9 +378,24 @@ def decode_configuration(image: bytes, label: str) -> dict:
             "product": parse_scsi_string(block[0xD0:0xE0]),
         },
         "markers_present": markers,
+        "usb_string_indexes": {
+            "iManufacturer": block[0x06],
+            "iProduct": block[0x07],
+            "iSerialNumber": block[0x08],
+        },
         "flags": {
             f"0x{CONFIG_OFFSET + offset:04x}": f"0x{block[offset]:02x}"
             for offset in (0xE7, 0xF2, 0xF3)
+        },
+        # Firmware applies 0xC0E7 only after the HD marker check.
+        "feature_byte_c0e7": {
+            "applied_by_firmware": markers["HD"],
+            "bit0_bus_powered_candidate": bool(block[0xE7] & 0x01),
+            "bit1_aes_enabled": bool(block[0xE7] & 0x02),
+            "bit2_extra_lun_odd": bool(block[0xE7] & 0x04),
+            "bit4_over_2tb_multi_lun_tool_only": bool(block[0xE7] & 0x10),
+            "bit5_multi_sector_tool_only": bool(block[0xE7] & 0x20),
+            "odd_size_bytes_c0e8_be": int.from_bytes(block[0xE8:0xEC], "big"),
         },
         "auto_spin_down": {
             "gate_bit_3_set": bool(block[0xF2] & 0x08),
@@ -387,9 +403,11 @@ def decode_configuration(image: bytes, label: str) -> dict:
             "countdown_raw": block[0xF4:0xF8].hex(" "),
             "countdown_u32_be": int.from_bytes(block[0xF4:0xF8], "big"),
             "low_u16_be": int.from_bytes(block[0xF6:0xF8], "big"),
-            "time_unit": "unverified",
+            "time_unit": "seconds per JMicron tool; firmware tick unverified",
+            "firmware_minimum": {"40.06": 180, "40.16": 60},
         },
         "byte_at_c0f8": f"0x{block[0xF8]:02x}",
+        "temp_boundary_40_16": max(block[0xF8], 45),
         "overlay_bytes_available": len(overlay),
         "nonzero_overlay_bytes_after_block": (
             sum(bool(byte) for byte in overlay_tail) if overlay_tail else None

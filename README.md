@@ -26,10 +26,14 @@ revision or firmware compatibility.
   indicate address wrapping or duplicate contents, not a confirmed chip
   capacity. The 1 TB volume was remounted after a successful readiness check.
   No erase or write CDB was sent in these later tests.
-- ORICO's JMS539B version 40.16 package lists 3549/3559 and 9548/9558 models;
-  it does not list 6648SUSJ3-BK. Its image contains identifier `5391` at
-  offset `0xbff4`, while the dock's version response contains `5392`. The
-  significance of this difference is unknown.
+- [ORICO's JMS539B version 40.16 package](https://www.orico.cc/index/attachment/index.html?id=8&page=4&mtpl=1)
+  lists 3549/3559 and 9548/9558 variants, but not 6648SUSJ3-BK. Its bundled
+  guide describes updating JMS539 multi-bay products from `31.00.40.06` to
+  `00.00.40.16` to improve HD-player and Linux compatibility. This is stronger
+  evidence for the firmware family, not confirmation for this exact dock.
+  The 40.16 image and the dock's captured 40.06 firmware both contain `5391`
+  at `0xbff4`, despite the dock's `5392` version response; that difference
+  alone is not proof of incompatibility.
 - A [third-party listing](https://www.usbdev.ru/files/jmicron/jms539firmware/)
   provides an image named `JMS539_B_31.00.40.06.BIN`. All 49,408 bytes match
   the beginning of the dock's repeatable capture, including `5391` at
@@ -65,14 +69,26 @@ Static analysis of this updater found:
   `0x0000` and, when detected capacity is at least 128 KiB, writes and
   verifies a second copy at `0x10000`. With smaller detected flash, it writes
   only one copy.
-- In one update configuration, that routine first reads 4 KiB from offset
-  `0xC000` and overlays it on the image in memory. The write length depends
-  on the input image; blindly writing a padded image would not necessarily
-  preserve the dock's existing configuration.
+- The form contains an **Include 4K NVRAM** checkbox. When unchecked, the
+  JMS539 path reads 4 KiB at `0xC000` and overlays it on the image in memory;
+  when checked, it uses the image contents instead. For the supplied
+  `0xC100`-byte image, the updater compares the first `0x100` bytes of that
+  overlay and transfers `0xC000..0xC1FF`, with the last `0x100` bytes
+  zero-filled. Preserving values is not the same as avoiding a settings-page
+  write. The bundled guide does not describe the checkbox.
 - The updater chooses write flags and chunk boundaries using its detected
   flash type and geometry. The actual erase scope on this dock is unverified;
   limiting requested write addresses to the first 64 KiB does not by itself
   establish that higher addresses would be preserved.
+- An offline emulation of isolated write-plan helpers with a hypothetical
+  `0xC000`-byte prefix and flash type 1 ends explicit transfers at `0xBFFF`.
+  The Python planner's mode 1 likewise produces twelve 4 KiB transfers ending
+  at `0xBFFF`, but has no hardware-writing command. Neither plan establishes
+  safe erase behavior or full-updater acceptance: mode 2 sets flag `0x02` at
+  `0x8000`, and retry mode 3 may erase the whole chip. Static allocation
+  analysis also indicates that the unchecked NVRAM overlay can overrun the
+  requested host buffer for this shorter image, depending on alignment; this
+  has not been reproduced. Do not use a trimmed image as a workaround.
 - A copy is valid when bytes `0xBFF0..0xBFF3` are `55 AA AA 55`, bytes
   `0xBFF4..0xBFF7` hold the chip identifier (`5391` here), and the
   big-endian word at `0xBFFE` matches a CRC-16 (polynomial `0x1021`, initial
@@ -101,6 +117,39 @@ These are static-analysis findings, not a tested update procedure. No update
 should be attempted until the image, target selection and write path are
 verified.
 
+## JMS539B mass-production tool
+
+ORICO's `JMMassProd2_v1_16_14_25.exe` (SHA-256
+`fe61dd07f5f7f79eab2fbdd88cd0b620522974f96820273fa46df6ebd736bafc`)
+has a dedicated programming branch for chip-type `0x13`, the value it labels
+`JMS539B Series`. Its INI and worker distinguish firmware update from EEPROM
+update, but disabling EEPROM update does **not** make a firmware update
+settings-write-free:
+
+- In the firmware-only branch, `0x42CDA8` requests a `0x1000`-byte read at
+  `0xC000`. If the result is nonblank and has `JM` at `0xC0FE`, it copies the
+  image's first `0xC000` bytes over the buffer, retaining the read settings.
+  Otherwise it copies the entire firmware image into the buffer. This
+  signature/nonblank test is not a settings checksum validation, and the
+  assembly does not branch on the read's return value before that test.
+- The same routine passes a length of at least `0xC100` to the writer. For
+  the supplied `0xC100`-byte 40.16 image, `0x42C318` rounds this to `0xC200`
+  and starts transfers at offset zero. Successful transfers therefore include
+  `0xC000..0xC1FF`, even with EEPROM update disabled. Device-side erase scope
+  and the exact installed flash remain unknown.
+- For a `0xC100`-byte image, the routine requests a `0xC100`-byte buffer but
+  asks the reader to copy `0x1000` bytes into it starting at `0xC000`. This
+  indicates a potential `0xF00`-byte host-buffer overrun, not dynamically
+  tested. Do not use this tool as a workaround for the no-settings-write
+  requirement.
+
+These are static findings for this specific executable and the conditional
+JMS539B branch, not proof that the dock will be classified as type `0x13`.
+Ghidra reported a duplicate `rust-common.gdt` analyzer error; the key branches,
+argument order and transfer sizes were cross-checked against x86 disassembly.
+Neither the production tool nor any hardware operation was run during this
+analysis.
+
 ## Design documentation and SDK
 
 The [two-page JMS539 datasheet](https://www.datasheethub.com/uploads/2023/07/jms539-datasheet.pdf)
@@ -119,14 +168,27 @@ ORICO should be asked separately for firmware and recovery instructions
 specific to 6648SUSJ3-BK.
 
 A November 2026 sweep used new terms, including Chinese and Russian ones,
-mass-production-tool names, Keil/C51 terms and GitHub code search. It still
-found no JMS539 SDK, firmware source, design guide or mass-production tool.
-Closest related material:
+mass-production-tool names, Keil/C51 terms and GitHub code search. It found no
+verified JMS539 SDK, firmware source or design guide. The earlier conclusion
+that no JMS539 mass-production tool had been found was incorrect:
 
-- [xRetia/JMS56x](https://github.com/xRetia/JMS56x) has the vendor
-  `JMMassProd2` v1.16.14.1 tool for the JMS56x family and a community
-  disassembly with pseudocode of JMS565 firmware. It contains nothing for
-  JMS539.
+- ORICO distributes `JMMassProd2_v1_16_14_25.exe` in its 3549/3559 firmware
+  and sleep-setting packages and `JMMassProd_v1_16_15_7.exe` in its JMS580/583
+  package. Both contain the strings `JMS551/539 Series` and `JMS539B Series`.
+  In the v1.16.14.25 executable, the code at `0x401CD5` selects the latter
+  label for chip-type value `0x13`; this is more than an unused string.
+  A [Station-Drivers guide](https://www.station-drivers.com/index.php?option=com_content&view=article&id=603&catid=15&Itemid=170&lang=en)
+  also describes MP Tool v1.16.14.1 for JMS551/539. This supports the tool
+  family's relevance, but does not prove that either ORICO build can safely
+  update this dock or avoid writes to its settings.
+- The tool exposes firmware update, EEPROM update, erase, partition and
+  format operations. ORICO's v1.16.15.7 configuration enables partition,
+  format, EEPROM update and firmware update; the v1.16.14.25 sleep-tool
+  configuration enables EEPROM update. Do not start either tool on connected
+  disks as an inspection method.
+- [xRetia/JMS56x](https://github.com/xRetia/JMS56x) contains the related
+  `JMMassProd2` v1.16.14.1 tool and a community disassembly with pseudocode of
+  JMS565 firmware. Its documentation focuses on JMS56x.
 - [station-drivers](https://www.station-drivers.com/index.php/en/component/remository/Drivers/Jmicron/JMS539-Sata-USB-3.0-Controller/lang,en-gb/)
   lists several JMS539 updater packages. The `255.31.3.41.22` package
   (archive SHA-256
@@ -134,16 +196,109 @@ Closest related material:
   contains `FwUpdateTool_v1_15_06_T2.exe` and
   `JMS539_PM_255.31.3.41.22_20100805.BIN` (36,940 bytes, SHA-256
   `68249795b8c532ccf6d6d344401a7832ee492fade4cc2dc172c5f83e37d047bb`).
-  Despite the higher-looking `41.22` number, the image uses a different, older
+  Despite the higher-looking `41.22` number, the image uses a different
   container. It begins with 4 KiB of `FF`, has `55 AA AA 55 35 35 31 31`
   (`5511`) at `0x1000`, and has `STRBANK`/`ENDBANK0` markers. It has no
-  `5391` trailer at `0xBFF0`, which the `JMS539_B` images have. It is
-  therefore not a candidate for this dock. The other packages listed there
-  were not examined.
+  `5391` trailer at `0xBFF0`, which the `JMS539_B` images have. This marker
+  difference alone does not establish incompatibility with JMS539: a
+  [StarTech bulletin](https://sgcdn.startech.com/005329/media/sets/SAT3540U3ER_Support_Material/ServiceBulletin-FirmwareUpdate.pdf)
+  names that same filename for three specific products. It provides no file
+  hash, and compatibility with this ORICO dock remains unknown. The other
+  packages listed there were not examined.
 - A gated CSDN listing claims to contain `JMS539FwUpdateTool_v07.exe`, an
   updater rather than an SDK. It was not downloaded.
 
+## ORICO firmware and Realtek packages
+
+On 2026-11-09, ORICO's English and Chinese five-page software catalogs were
+surveyed. The six English firmware-labelled SATA dock/enclosure entries and
+the JMS580/583 M.2 entry were downloaded and inspected, as were the TUW11 and
+ASM2464 firmware entries, four Chinese storage sleep-tool bundles and selected
+network and Bluetooth drivers. This is not a claim to have found every
+firmware ORICO has ever distributed. No updater or production tool was run
+as part of this catalog inspection.
+The [firmware-labelled package inventory](re/jms539/orico_firmware_packages.tsv),
+[additional package inventory](re/jms539/orico_other_packages.tsv) and
+[additional payload inventory](re/jms539/orico_additional_payloads.tsv) record
+sources, local ignored paths, sizes and SHA-256 hashes.
+
+| Catalog models | Archive contents |
+|---|---|
+| 6638US3-C | `JMB352U_Orico_6638USJ-c_1U3S_Clone_v85.27.1.BIN` |
+| 9548/9558, 3549/3559 and other listed models | `JMS539B_PM_v40.16.BIN` |
+| 3549RUS3, 3559RUS3 | `JMS567_For_ORICO ... v125.03.00.01.BIN` |
+| 9558RU3 | `JMS567_PM_non575S_v00.03.02.03.BIN` |
+| NS100U3 | `JMS578_STD_v00.01.00.03_SelfPower.bin` |
+| 3139U3, 6139U3, 7688U3, MD35U3, 6228 | `JMS578_STD_v00.02.00.02_BUSPower.bin` |
+| JMS580/583 M.2 models | No separate named firmware image; the production tool contains embedded ROM/MFG resources, and the guide references a missing JMS583 image. |
+
+[ORICO describes 6638US3-C](https://www.orico.cc/index.php/index/product/detail/1217.html?mtpl=1)
+as a three-bay dock with standalone 1-to-2 cloning. Its firmware archive uses
+the different model spelling `6638USJ-C`: the 20 KiB image has a `3520`
+marker, not the `5391` marker of 40.16. The included updater is byte-identical
+to the 40.16 package's updater, but its guide describes JMS539_B. The guide and
+similar model names do not establish that the image targets this dock's
+JMS539 bridge or that it is interchangeable.
+
+The 40.16 guide lists 3549RUS3, 3559RUS3 and 9558RU3, which also appear in
+separate JMS567 packages in the catalog. A model-name match alone therefore
+does not identify the installed chip or establish firmware compatibility.
+
+Additional findings from the Chinese catalog and selected drivers:
+
+- The NVMe sleep-tool download contains `RTL9210AB_v1.27.24.zip`, with
+  Realtek RTL9210A and RTL9210B images, older B firmware, A/B `UTGDFW`
+  binaries, configuration files and x86/x64 `UTHSB_MPtool_Lite` executables.
+  It also contains an ASM236x image and a JMS583 updater whose PE resources
+  include `JMS578_FW`, two `JMS583` firmware-named resources and a
+  `JMS583_ROM_MFG` resource. The RTL9210 `0` and `10` sleep profiles differ
+  only in semicolon-prefixed comment lines and a trailing newline; their
+  `PCIE_PWRCUT_THRES` assignments are also prefixed with `;`. The tool's
+  interpretation of these files has not been tested.
+- SATA sleep-tool bundles contain a JMS567B `v100.5.2.0` image, a VL716
+  image, two NS1068 images and four ASMedia-labelled binary files. The
+  JMicron production executables also contain ROM/MFG-labelled resources for
+  several controller families. Resource names do not prove these are
+  stand-alone flash images.
+- The ASM2464 package contains `AS_USB4_240913_85_00_00.bin`. The TUW11
+  wireless USB flash-drive package contains an update binary and a separate
+  web-interface binary; its release notes identify version
+  `1.1.26.3-A140(V.01)`.
+- ORICO's BTA-60, BTA-508 and BTA-608 driver packages contain RTL8761B-named
+  Bluetooth ROM patches. Its RE18, WF-RE1/RE2/RA1, WF-RE3 and WRF-300 Linux
+  downloads include older Realtek Wi-Fi driver and Android reference/SDK
+  material; the WRF-300 package includes an RTL8712 driver programming guide.
+  The Ethernet-hub download contains `r8152` source, and the PTR-FU download
+  contains `r8125` source. The PTR-FU archive was retrieved over HTTP because
+  the catalog host's HTTPS certificate had expired. The JMB352U, JMS539B and
+  9558RU3 firmware archives were also retrieved over HTTP. Their origins are
+  not cryptographically authenticated: the recorded hashes identify the
+  downloaded bytes, not a verified publisher signature. The network and
+  Bluetooth packages are unrelated to JMS539, and their compatibility with
+  current systems was not tested.
+
+The model lists apply to whole catalog bundles, not necessarily every image
+inside them. None of the additional images or production tools is established
+as suitable for this dock or as meeting its no-settings-write requirement.
+
 ## Linux tooling
+
+The dock's original log shows `usb-storage`, not `uas`, bound at that
+enumeration. The reported `0x04000000` quirk is
+[`NO_REPORT_OPCODES`](https://github.com/torvalds/linux/blob/master/include/linux/usb_usual.h),
+not `IGNORE_UAS` (`0x00800000`); the log alone does not prove that the dock
+cannot support UAS. The JMS539 datasheet describes Bulk-Only Transport, and
+there is no evidence that the 40.16 update enables UAS.
+
+An offline `flashrom` 1.6.0 dummy test selected only `0x0000..0xBFFF` for
+writing the 40.16 code over the captured 40.06 contents. With the 64 KiB
+`VARIABLE_SIZE` dummy chip, flashrom erased and rewrote `0x0000..0xFFFF`,
+including the settings, although the final bytes matched. With an emulated
+512 KiB `SST25VF040.REMS`, it erased only `0x0000..0x8FFF` and
+`0xB000..0xBFFF`; the simulated bytes beyond the captured 64 KiB were
+synthetic. Neither test identifies the real flash chip or its erase geometry.
+A layout excluding settings, or unchanged readback alone, does not prove the
+settings were not erased.
 
 [BertoldVdb/jms578flash](https://github.com/BertoldVdb/jms578flash) targets
 JMS578, not this bridge. Its SPI polling loop has no timeout, and its firmware
@@ -256,7 +411,7 @@ at `0xC000` and, with two files, reports every differing byte in that range.
 It accepts regular files only and sends no device commands. It checks the
 firmware marker and CRC before decoding; **that CRC does not cover the
 configuration block**, so it does not verify the settings. The JSON includes
-the raw block, descriptor errors, flags, candidate timer values, and how much
+the raw block, descriptor errors, decoded flags, timer values, and how much
 of the updater's 4 KiB overlay is available in each file.
 
 [xx25/jms567settings](https://github.com/xx25/jms567settings) describes a
@@ -267,43 +422,69 @@ verified `##VER:0103` firmware family; neither local JMS539 image contains
 that marker. Its write operations and other chips' feature-bit definitions
 must not be assumed safe or applicable to this dock.
 
-The local 40.06 capture and 40.16 image have the same decoded identity:
+The local 40.06 capture and 40.16 image have the same decoded identity. The
+meanings below come from tracing the firmware loader (40.06 `0x4971`, 40.16
+`0x4A12`) and every consumer of its working variables in Ghidra, then checking
+the encoding in the x86 code of JMicron's `JMMassProd2` v1.16.14.25 (JMS539B
+branch at `0x4062C8`–`0x4064F5`). The loader copies `0xC000` to XDATA `0x3800`
+and returns without applying anything if the `JM` marker at `0xC0FE` is absent.
 
-| Offset | Stored field |
-|---|---|
-| `0xC000`–`0xC003` | Little-endian USB VID:PID `152d:0539` |
-| `0xC00C`, `0xC030` | Packed ASCII USB strings `JMicron` and `USB to ATA/ATAPI Bridge` |
-| `0xC054` | Empty serial descriptor; the live all-zero USB serial is not explained |
-| `0xC0C8`, `0xC0D0` | Candidate SCSI inquiry strings `JMicron` and `Generic` |
-| `0xC0E0`, `0xC0F0`, `0xC0FE` | Markers `HD`, `BC`, `JM` |
-| `0xC0E7`, `0xC0F2`, `0xC0F3` | Raw flags `00`, `18`, `01`; most meanings remain unverified |
+| Offset | Value here | Meaning | Evidence |
+|---|---|---|---|
+| `0xC000`–`0xC003` | `152d:0539` | Little-endian USB VID:PID, used by the device descriptor (`0xABF0`) | Firmware |
+| `0xC006`–`0xC008` | `0a 0b 05` | `iManufacturer`, `iProduct`, `iSerialNumber` indexes; match dmesg `Mfr=10, Product=11, SerialNumber=5` | Firmware + tool sets `0xC006=0x0A` |
+| `0xC00C`, `0xC030` | `JMicron`, `USB to ATA/ATAPI Bridge` | Packed ASCII USB strings | Firmware |
+| `0xC054` | empty | Serial descriptor; the live all-zero USB serial is not explained | Firmware |
+| `0xC0C8`, `0xC0D0` | `JMicron`, `Generic` | SCSI INQUIRY vendor/product | Tool copies INQUIRY string to `+0xC8` |
+| `0xC0E7` bit 0 | 0 | Bus-powered: config `bmAttributes` `0x80` instead of `0xC0`, `bMaxPower`, GET_STATUS self-powered bit (`0xAD6C`, `0xAAF9`) | Firmware; needs `HD` marker |
+| `0xC0E7` bit 1 | 0 | AES enable (prints `AES is enabled!`, `0xBB6E`) | Firmware |
+| `0xC0E7` bit 2 | 0 | Extra LUN / virtual ODD; size is `0xC0E8`–`0xC0EB` big-endian, tool writes sectors × `0x800` | Firmware + tool |
+| `0xC0E7` bits 4, 5 | 0 | Tool's `EnOver2TBMulLun` and `EnMultiSec` (mutually exclusive) | Tool only; no decoded 40.16 flash code tests them |
+| `0xC0F2` bit 0 | 0 | Final state of register `0x7003` bit 6. Reset init (`0xBD09`, from stub `0x4110`) sets it; if the settings are absent the default forces it on (`0x3210=1`, `0xBECA`); `0xBB55` then applies this bit; the `DIE 0x..` handler (`0xC9F7`) clears it. Both JMS539 vendor images ship it clear; no JMicron tool exposes it (they change only `0xC0F2` bit 3) | Firmware; hardware function unknown, no public register map |
+| `0xC0F2` bit 3 | 1 | Auto spin-down enable | Firmware + tool |
+| `0xC0F2` bit 5 | 0 | Idle level of the activity indicator: the tick hook toggles `0x7058` bit 4 and `0x7059` bit 0 while busy, then restores bit 4 from this setting when idle | Firmware; likely an LED GPIO, polarity depends on the board |
+| `0xC0F2` bits 1, 4 | 1 (bit 4) | Copied to working bytes never read in 40.16 | Firmware |
+| `0xC0F3` bit 1 | 0 | Skips the first-time `atapi_link` stage of optical-drive (ATAPI, signature `14 EB`) detection: sets the ATAPI flag bit `0x0A` and clears pending flag `0x32A7`. While pending, `0x9D76` passes only TEST UNIT READY, REQUEST SENSE, INQUIRY and vendor opcodes `DF`/`E0`/`FE`/`FF` straight through | Firmware (40.16); bit 0 unused |
+| `0xC0F4`–`0xC0F7` | see below | Big-endian 32-bit spin-down timeout in seconds | Firmware + tool writes minutes × 60 |
+| `0xC0F8` | see below | 40.16 "Temp boundary", minimum 45; passed into mask ROM | Firmware string; units/effect unverified |
+| `0xC0E0`, `0xC0F0`, `0xC0FE` | `HD`, `BC`, `JM` | Markers gating `0xC0E7`, `0xC0F2`+, and the whole block | Firmware |
 
-Static analysis provides stronger evidence for the changed bytes. The 40.06
-loader sets up a read from `0xC000` into XDATA `0x3800`, checks the markers,
-and tests bit 3 of `0xC0F2`. When set, its code at CPU `0x4A79` sets up a
-four-byte copy from `0xC0F4` into a working countdown, labeled
-`Auto Spin Down Timer` in the firmware. The countdown code subtracts across
-all four bytes. The 40.16 code at `0x4B25` has a corresponding path.
+Register `0x7003` context (40.16): bits 0–2 are rewritten with per-revision analog tuning of the `0x72xx` PHY bank in the USB 3.0 link handler `0xC79B` (prints `compliance=`, `warm=`, `loopback=`); bits 4–5 are set at init. The revision code `0x4C0F` comes from hardware register `0x70B7` (`0xBCD7`: high nibble `8`→1, `9`/`B`→2, `A`→3, else 0) and also selects configuration-descriptor power values (`0xAE13`). `0x7054`/`0x7055` are set to `0xFF` and `0x7058`/`0x7059` saved at init, consistent with GPIO enable and data registers; the JMS578 flasher's `0x7054` LED write and a JMS583 write-up's `0x7058` LED guess agree. JMicron's `JMMassProd2` reads INI keys `USBSSCEnable` and `SATASSCEnable` in its JMS567 group but never uses them, so spread-spectrum clocking for bit 6 is only a hypothesis. No SDK, register manual or full datasheet is public: the JMS539 datasheet v0.5.4 on usbdev.ru is a pin-level document (its download currently fails) and other copies are the two-page brief.
+
+Ghidra mis-decodes one loader read: the mask-ROM helper `0x1BF0` stores the
+inline four-byte constant after its call (40.16 `0x4A3B`, `"JM0P"`), so the
+following `MOV DPTR,#0x3806` is misaligned and the memory inventories miss the
+`0x3806` read.
+
+### Auto spin-down
 
 | Field | 40.06 capture | 40.16 image |
 |---|---|---|
 | `0xC0F2` bit 3 | Set | Set |
-| `0xC0F4`–`0xC0F7` | `2d 00 01 2c` = `754975020` big-endian | `00 00 07 08` = `1800` big-endian |
+| `0xC0F4`–`0xC0F7` | `2d 00 01 2c` = `754975020` s (~24 years) | `00 00 07 08` = `1800` s (30 min) |
 | `0xC0F8` | `00` | `2d` = `45` |
+| Firmware minimum | 180 s | 60 s |
 
-For comparison, the JMS567 tool interprets only `0xC0F6`–`0xC0F7` as a
-big-endian timeout in seconds, giving 300 and 1800. **That is not a verified
-five-minute timeout on this JMS539:** 40.06's high bytes are nonzero and the
-static code appears to use all four. The unit, ROM helper behavior and actual
-live spin-down timing remain unverified. In 40.06, `0xC0F4` is also copied
-separately to another working byte; 40.16 instead reads `0xC0F8` and labels
-that value `Temp boundary`, with a minimum of 45. Its units and effect are
-not confirmed.
+The firmware loads the timer into `0x3218`–`0x321B`, clamps it to the minimum,
+and reloads an IRAM countdown (`0x65`–`0x68`) after drive activity. The tick
+hook (40.06 `0x462B`, 40.16 `0x4684`) subtracts 8 every 1024 mask-ROM ticks;
+at zero the main loop calls `auto_spin_down_hdd` (40.16 `0xCA82`), which prints
+`== Auto-Spin-Down-HDD ==`. The tick period is in unavailable mask ROM, so
+seconds are taken from the tool and live timing is unverified. When the drive is detected as ATAPI (optical), the firmware
+clears the spin-down enable, the `0xC0E7` working copy and related state.
+
+**The installed 40.06 settings effectively disable bridge spin-down.** The
+`0x2D` (45) at `0xC0F4` looks like a temperature value overlapping the timer's
+high byte; 40.16 moved the temperature to `0xC0F8`. The low bytes `0x012C`
+(300 s) are what the JMS567 tools would report, but the JMS539 code uses all
+four bytes. JMS567 public decodings (`0xC0E7` bit 6 UAS, `0xC0F3` bit 7 NCQ,
+16-bit timer) are not used by any decoded JMS539 path.
 
 If the updater preserves the capture's configuration while installing 40.16,
-the new code would receive the capture's `2d 00 01 2c` timer bytes, not the
-candidate image's `00 00 07 08`. The resulting live behavior has not been
-tested.
+the timer stays at ~24 years and the temperature boundary is clamped from 0 to
+45. No public JMS539 release notes were found; the datasheet is a two-page
+brief. A 2017-10-12 log bundled with ORICO's `JMMassProd2` records an EEPROM
+and firmware-check pass on a unit with this dock's identity.
 
 The 40.06 capture has zeros at `0xC100`–`0xCFFF`; the 40.16 image ends at
 `0xC100`, so its bytes beyond the decoded block cannot be compared. The
@@ -620,7 +801,7 @@ The durable, image-hash-bound findings are in
 Add each finding to the appropriate TSV with its CPU address, name, type,
 evidence, status and confidence. Only `[fw]`/`high` rows are applied to the
 project; lower-confidence rows remain candidates. Currently each version has
-nine applied findings and seven candidates. Confirmed function rows must
+12 applied findings; 40.06 has seven candidates and 40.16 has eight. Confirmed function rows must
 point to existing Ghidra function entries; unrelated names and comments are
 not overwritten.
 
@@ -688,6 +869,21 @@ the workspace's `comparison/` directory; review it before updating the tracked
 snapshot. The separate same-offset comparison found 14,571 matching and
 34,581 differing positions across the 49,152-byte slices; that is not Version
 Tracking.
+
+## Flasher (`scripts/jms539_flash.py`)
+
+- Subcommands: `check` (read-only: identity, version, flash type, fresh 64 KiB
+  backup, staged payload, confirmation token), `write`, `restore`.
+- Sequence follows the decompiled vendor updater: busy poll before every
+  command, mode 2 write with mode 1 retry, readback, reset. Mode 3 is never
+  sent. Refuses flash types other than 1 and docks with mounted partitions.
+- Writes the full 64 KiB so bytes after the image keep their contents;
+  `--config device|image` selects which settings page is used.
+- Tested only against a fake dock (`tests/test_jms539_flash.py`); never run on
+  real hardware.
+- Unverified: actual erase scope of `DF 02`, power-loss recovery, Linux
+  handling of leftover-byte counts. Disk-write path of the vendor updater is
+  skipped (#7).
 
 ## Physical read options
 

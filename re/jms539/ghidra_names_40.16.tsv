@@ -3,7 +3,9 @@
 # address	name	type	comment	status	confidence
 # [fw] records directly observed behavior; [guess] records an interpretation not applied as a name.
 CODE:4200	check_signature_initialization_candidate	func	Calls the XDATA signature checker and initializes several values if it returns carry set; the overall role is not established.	[guess]	med
-CODE:4B58	post_1bf0_nop_sequence	label	Three NOPs follow LCALL 0x1BF0; D52 identifies an instruction at 0x4B5B, which Ghidra currently leaves undecoded. ROM helper behavior and return semantics remain unknown.	[guess]	med
+CODE:4684	tick_countdown_hook	func	Called from stub 0x40A0. When IRAM 0x40:0x41 reaches 0x0400 it is cleared and the 32-bit countdowns at IRAM 0x6D..0x70 and 0x65..0x68 each lose 8, saturating at zero. The counter increment and its period are in unavailable ROM.	[fw]	high
+CODE:4A12	load_flash_settings	func	Copies flash 0xC000 into XDATA 0x3800, checks JM at 0xC0FE, HD at 0xC0E0 and BC at 0xC0F0, then copies VID/PID, USB string indexes 0xC006-0xC008, feature byte 0xC0E7, flags 0xC0F2/0xC0F3, the big-endian spin-down value at 0xC0F4 and the 0xC0F8 Temp boundary (minimum 45) into working variables.	[fw]	high
+CODE:4B58	post_1bf0_nop_sequence	label	Three NOPs follow LCALL 0x1BF0; with the next byte they form 00 00 00 3C. The surrounding code stores this inline value to XDATA 0x3218 when the loaded spin-down value is below it, i.e. a 60-unit minimum. D52 identifies an instruction at 0x4B5B; ROM helper semantics are inferred from the call pattern.	[guess]	med
 CODE:7CAE	command_dispatch_candidate	func	Loads XDATA 0x300F and calls unavailable 0x1C2D before a sorted target/opcode table; dispatch semantics are inferred.	[guess]	med
 CODE:7CB5	command_table_candidate	label	36 sorted three-byte target/opcode entries, followed by 00 00 and default 0x7F59; DF entry points to 0x7D84.	[guess]	med
 CODE:7D84	df_command_path_candidate	func	Apparent DF table target; checks byte at XDATA 0x301A and forwards or processes paths including FB.	[guess]	med
@@ -15,6 +17,8 @@ CODE:97F2	clear_vendor_gate_bit	label	After comparisons with FF 04 4A 4D AA, cle
 CODE:9808	check_vendor_e0	label	Compares the command-buffer bytes with E0 F4 E7 before the conditional gate rejoins the command path.	[fw]	high
 CODE:981A	check_vendor_df	label	Compares the command-buffer opcode with DF on the conditional gate path.	[fw]	high
 CODE:98BE	iram_4d_switch_table_candidate	label	13 sorted target/opcode entries follow LCALL 0x1C2D after loading IRAM 0x4D; default target 0x9BFB. ROM helper semantics are unknown.	[guess]	med
+CODE:AD6C	usb_config_descriptor_power_candidate	func	Sets XDATA 0x3D78 to 0x80 when bit 0 of the 0xC0E7 working copy (XDATA 0x3215) is set, otherwise 0xC0, and chooses different power values; consistent with USB bmAttributes bus/self power and bMaxPower.	[guess]	med
 CODE:AF23	secondary_command_table_candidate	label	24 sorted target/opcode entries follow LCALL 0x1C2D after loading XDATA 0x300F; default target 0xAFD0. ROM helper semantics are unknown.	[guess]	med
 CODE:BA40	write_xdata_4c00_signature	func	Writes 5A C3 69 E1 to XDATA 0x4C00..0x4C03; the range's purpose and persistence are unknown.	[fw]	high
 CODE:BA53	check_xdata_4c00_signature	func	Compares XDATA 0x4C00..0x4C03 with 5A C3 69 E1 and returns carry clear only when all four match.	[fw]	high
+CODE:CA82	auto_spin_down_hdd	func	Prints == Auto-Spin-Down-HDD ==, requests state 0x1A through 0x594A and reloads IRAM 0x65..0x68 from XDATA 0x3218. Reached from 0xC29B when XDATA 0x3217 is set and the countdown is zero.	[fw]	high
