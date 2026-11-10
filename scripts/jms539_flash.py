@@ -7,7 +7,8 @@ Usage:
     sudo python3 scripts/jms539_flash.py restore /dev/sgN BACKUP --confirm TOKEN
 
 `check` is read-only: it verifies the dock, reads the version and flash type
-(`FF 04 23 04`; JEDEC `9F` via `FF 04 20/21` only if the type is 0), captures and
+(`FF 04 23 04`, then JEDEC `9F` via `FF 04 20/21`; only type 1 / `7F 9D 20` = 64 KiB
+is accepted), captures and
 saves a fresh 64 KiB backup, stages the payload and prints the confirmation
 token. `write` repeats every check, then writes, reads back, retries once and
 resets the dock. `restore` writes a saved 64 KiB backup and does not require
@@ -52,6 +53,8 @@ SPI_JEDEC_CDB = bytes.fromhex("ff 04 20 01 01 9f 00 00 00 00 00 00")
 SPI_RESULT_CDB = bytes.fromhex("ff 04 21 00 00 00 00 00 04 00 00 00")
 # Updater tables at 0x4882ac/0x4882d8: type 1 (JEDEC 7F 9D) = 32 KiB block, 4 KiB sector.
 SUPPORTED_FLASH_TYPE = 1
+# Updater capacity table (FUN_00415db0): 7F 9D 20 = 64 KiB, 21 = 128 KiB, 22 = 256 KiB.
+SUPPORTED_JEDEC = bytes.fromhex("7f9d20")
 VERSION_CDB = bytes.fromhex("".join(dev.VERSION_CDB))
 POLL_INTERVAL = 0.01
 POLL_LIMIT = 501
@@ -282,18 +285,24 @@ class Flasher:
         return results[0]
 
     def flash_type(self) -> dict:
-        """Mirror the updater's identification: FF 04 23, then JEDEC 9F only for type 0."""
-        kind = self._stable_in(FLASH_TYPE_CDB, 4)[0]
-        info = {"flash_type": kind, "jedec": None}
-        if kind == 0:
-            self.wait_ready()
-            self.transport.no_data(SPI_JEDEC_CDB, READ_TIMEOUT_MS)
-            jedec = self._stable_in(SPI_RESULT_CDB, 4)
-            info["jedec"] = jedec.hex()
-            if jedec[:2] == b"\x7f\x9d":
-                info["flash_type"] = SUPPORTED_FLASH_TYPE
+        """FF 04 23 type (all 4 bytes, as the updater indexes with the full value), then
+        always JEDEC 9F: type 1 spans 64/128/256 KiB parts and the updater writes a second
+        copy at 0x10000 from 128 KiB up, which this flasher does not do."""
+        response = self._stable_in(FLASH_TYPE_CDB, 4)
+        info = {"flash_type": response[0], "type_response": response.hex(), "jedec": None}
+        if response[1:] != b"\x00\x00\x00":
+            raise DockError(f"unexpected flash type response {response.hex()}")
+        self.wait_ready()
+        self.transport.no_data(SPI_JEDEC_CDB, READ_TIMEOUT_MS)
+        jedec = self._stable_in(SPI_RESULT_CDB, 4)
+        info["jedec"] = jedec.hex()
+        if info["flash_type"] == 0 and jedec[:2] == b"\x7f\x9d":
+            info["flash_type"] = SUPPORTED_FLASH_TYPE
         if info["flash_type"] != SUPPORTED_FLASH_TYPE:
             raise DockError(f"flash type {info} is not type 1 (7F 9D); erase geometry would differ")
+        if jedec[:3] != SUPPORTED_JEDEC:
+            raise DockError(f"JEDEC ID {jedec.hex()} is not {SUPPORTED_JEDEC.hex()} (64 KiB); "
+                            "larger parts need a second firmware copy at 0x10000")
         return info
 
     def read(self, length: int, sentinel: int) -> bytes:

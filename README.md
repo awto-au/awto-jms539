@@ -876,7 +876,9 @@ Tracking.
   backup, staged payload, confirmation token), `write`, `restore`.
 - Sequence follows the decompiled vendor updater: busy poll before every
   command, mode 2 write with mode 1 retry, readback, reset. Mode 3 is never
-  sent. Refuses flash types other than 1 and docks with mounted partitions.
+  sent. Refuses flash types other than 1, JEDEC IDs other than `7F 9D 20`
+  (64 KiB; the updater writes a second copy at `0x10000` for 128 KiB+ parts)
+  and docks with mounted partitions.
 - Writes the full 64 KiB so bytes after the image keep their contents;
   `--config device|image` selects which settings page is used.
 - Tested only against a fake dock (`tests/test_jms539_flash.py`); never run on

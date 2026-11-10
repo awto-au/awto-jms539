@@ -146,10 +146,25 @@ class FlashTests(unittest.TestCase):
 
 
 class IdentificationTests(unittest.TestCase):
-    def test_type_one_needs_no_spi_passthrough(self) -> None:
+    def test_type_one_still_reads_the_jedec_id_for_capacity(self) -> None:
         dock = FakeDock(device_fixture())
-        self.assertEqual(flasher_for(dock).flash_type(), {"flash_type": 1, "jedec": None})
-        self.assertNotIn(jf.SPI_JEDEC_CDB, dock.commands)
+        self.assertEqual(flasher_for(dock).flash_type(),
+                         {"flash_type": 1, "type_response": "01000000", "jedec": "7f9d207f"})
+        self.assertIn(jf.SPI_JEDEC_CDB, dock.commands)
+
+    def test_larger_type_one_parts_are_refused(self) -> None:
+        for capacity in (0x21, 0x22):
+            with self.assertRaisesRegex(jf.DockError, "64 KiB"):
+                flasher_for(FakeDock(device_fixture(), jedec=bytes((0x7F, 0x9D, capacity, 0x7F)))).flash_type()
+
+    def test_nonzero_type_response_tail_is_refused(self) -> None:
+        class Tail(FakeDock):
+            def data_in(self, cdb, length, timeout_ms, sentinel):
+                if cdb == jf.FLASH_TYPE_CDB:
+                    return bytes((1, 0, 0, 7)), 0
+                return super().data_in(cdb, length, timeout_ms, sentinel)
+        with self.assertRaisesRegex(jf.DockError, "unexpected flash type response"):
+            flasher_for(Tail(device_fixture())).flash_type()
 
     def test_type_zero_falls_back_to_jedec_like_the_updater(self) -> None:
         dock = FakeDock(device_fixture(), flash_type=0)
