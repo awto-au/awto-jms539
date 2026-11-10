@@ -44,6 +44,31 @@ revision or firmware compatibility.
   `7f 9d 20` to 64 KiB, but that is not independent confirmation of the
   installed chip or its write commands.
 
+## Repository workflow
+
+The Python entry point is `scripts/dev.py`. Start with its help or machine-
+readable command description, then run the offline checks:
+
+```bash
+python3 scripts/dev.py --help
+python3 scripts/dev.py describe
+python3 scripts/dev.py test
+python3 scripts/dev.py gate
+```
+
+`test` and `gate` run the offline test suite; output is logged to
+`tmp/logs/dev.log`. Use `plan IMAGE --backup CAPTURE` or
+`config IMAGE [OTHER_IMAGE]` to inspect firmware and captures offline.
+`plan` models updater behavior; it is not a hardware procedure and does not
+establish that a write is safe.
+
+`dev.py` has no firmware-writing command. `version` communicates with the
+explicitly selected `/dev/sgN` device; `scripts/jms539_flash.py` is the only
+firmware writer. Do not run any command against hardware without Dan's
+explicit go. The offline planner can model mode 3, but never send it to
+hardware. Keep vendor binaries, captures and generated research in their
+ignored paths.
+
 ## Windows updater investigation
 
 The supplied updater is a 32-bit Windows C++Builder application with no PE
@@ -331,6 +356,7 @@ The Python entry point is `scripts/dev.py`; run
 to the explicitly supplied SCSI generic node. Verify the node and its USB
 parent before use; names such as `/dev/sg2` can change after reconnecting.
 The command requires `sg_raw` and rejects short or invalid version responses.
+Do not run it against hardware without Dan's explicit go.
 
 `python3 scripts/dev.py plan IMAGE --backup CAPTURE` reconstructs a single
 first-region write attempt **offline**, assuming updater flash type 1. It
@@ -881,8 +907,9 @@ Tracking.
   and docks with mounted partitions.
 - Writes the full 64 KiB so bytes after the image keep their contents;
   `--config device|image` selects which settings page is used.
-- Tested only against a fake dock (`tests/test_jms539_flash.py`); never run on
-  real hardware.
+- Tested only against a fake dock (`tests/test_jms539_flash.py`). Do not run
+  any hardware command without Dan's explicit go; never send mode 3 to
+  hardware.
 - Unverified: actual erase scope of `DF 02`, power-loss recovery, Linux
   handling of leftover-byte counts. Disk-write path of the vendor updater is
   skipped (#7).
